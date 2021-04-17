@@ -1,0 +1,159 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content%}
+
+
+    <div class="hero-v1">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mr-auto text-center text-lg-left">
+            <span class="d-block subheading">Przeglądaj dane regionalne</span>
+            <h1 class="heading mb-3">Województwo {{region}}</h1>
+            <p class="mb-5">Na tej stronie znajdziesz dokładne dane dla województwa w postaci wykresów</p>
+            <p class="mb-4"><a href="#" class="btn btn-primary">Otwórz dane w arkuszu</a></p>
+
+
+
+          </div>
+          <div class="col-lg-6">
+            <figure class="illustration-2">
+              <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+            </figure>
+          </div>
+          <div class="col-lg-6"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MAIN -->
+    
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Dzienna liczba zachorowań i średnia 7 dniowa</h2>
+            <p>Ilość potwierdzonych przypadków</p>
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div1 | safe}}
+            </figure>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="site-section bg-primary-light">
+        <div class="container">
+          <div class="row mb-3">
+            <div class="col-lg-7 text-center mx-auto">
+              <h2 class="section-heading">Dzienna liczba zgonów i średnia 7-dniowa</h2>
+              <p>Porównaj obłożenie szpitali</p>
+            </div>
+            <div class="col-lg-9 text-center mx-auto">
+              <figure class="plot mx-auto">
+                {{ div2 | safe}}
+              </figure>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="site-section">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-5 mr-auto">
+              <h2 class="section-heading mb-4">Średnia 7 dniowa wzrostu zajętych łóżek</h2>
+              <p>Wykres prezentuje zmianęzajętych łóżek d/d</p>
+              <figure class="plot mx-auto">
+                {{ div3 | safe}}
+              </figure>
+            </div>
+              
+  
+            <div class="col-lg-5 ml-auto">
+              <h2 class="section-heading mb-4">Średnia 7 dniowa wzrostu zajętych respiratorów</h2>
+              <p>Wykres prezentuje zmianęzajętych respiratorów d/d</p>
+              
+              <figure class="plot mx-auto">
+                {{ div4 | safe}}
+              </figure>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="site-section bg-primary-light">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Procent zajętych łóżek</h2>
+            <p>Procent zajętych łóżek covid w województwie</p>
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div5 | safe}}
+            </figure>
+          
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="site-section">
+        <div class="container">
+          <div class="row mb-3">
+            <div class="col-lg-7 text-center mx-auto">
+              <h2 class="section-heading">Procent zajętych respiratorów</h2>
+              <p>Procent zajętych łóżek covid w województwie</p>
+
+            </div>
+            <div class="col-lg-9 text-center mx-auto">
+              <figure class="plot mx-auto">
+                {{ div6 | safe}}
+              </figure>
+            
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="site-section bg-primary-light">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-5 mr-auto">
+            <h2 class="section-heading mb-4">Wykonane testy i średnia 7-dniowa</h2>
+            <p>Wykres prezentuje liczbę wykonanych testów</p>
+            <div class="col-lg-9 text-center mx-auto">
+            
+            </div>
+            <figure class="plot mx-auto">
+              {{ div7 | safe}}
+            </figure>
+          </div>
+            
+
+          <div class="col-lg-5 ml-auto">
+            <h2 class="section-heading mb-4">Wykonane szczepienia i średnia 7-dniowa</h2>
+            <p>Wykres prezentuje liczbę wykonanych szczepień</p>
+            
+            <div class="col-lg-9 text-center mx-auto">
+            
+            </div>
+            <figure class="plot mx-auto">
+              {{ div8 | safe}}
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+{%endblock%}

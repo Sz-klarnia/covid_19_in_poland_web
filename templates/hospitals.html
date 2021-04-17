@@ -1,0 +1,179 @@
+{% extends "base.html"%}
+{% load static%}
+{% load humanize%}
+{% block content%}
+
+    
+
+
+    <div class="hero-v1">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mr-auto text-center text-lg-left">
+            <span class="d-block subheading">Przeglądaj dane</span>
+            <h1 class="heading mb-3">Aktualna sytuacja epidemiczna</h1>
+            <p class="mb-5">Na tej stronie znajdziesz wykresy dotyczące hospitalizacji, kwarantanny oraz</p>
+            <p class="mb-4"><a href="https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho#" class="btn btn-primary">
+              Otwórz dane w arkuszu</a></p>
+
+
+
+          </div>
+          <div class="col-lg-6">
+            <figure class="illustration-2">
+              <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+            </figure>
+          </div>
+          <div class="col-lg-6"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="site-section stats">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Najnowsze dane</h2>
+            <p>Dane z ostatniego raportu Ministerstwa Zdrowia</p>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/020-ambulance.svg' %}" alt="Image">
+
+              <strong class="d-block number">{{hosp.hospitalized|floatformat:'0'|intcomma}}</strong>
+              <span class="label">Hospitalizacje</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/037-lungs.svg' %}" alt="Image">
+
+              <strong class="d-block number">{{hosp.icu|floatformat:'0'|intcomma}}</strong>
+              <span class="label">Pod respiratorem</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/048-no travelling.svg' %}" alt="Image">
+
+              <strong class="d-block number">{{hosp.quarantined|floatformat:'0'|intcomma}}</strong>
+              <span class="label">W kwarantannie</span> 
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/020-ambulance.svg' %}" alt="Image">
+
+              <strong class="d-block number">{{ hosp.pct_taken_beds }}</strong>
+              <span class="label">Procent zajętych łóżek</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+                <img class="img-icon" src= "{% static 'images/svg/037-lungs.svg' %}" alt="Image">
+
+                <strong class="d-block number">{{ icu_pct|floatformat:'2' }}</strong>
+                <span class="label">Procent zajętych respiratorów</span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    
+    <div class="site-section bg-primary-light">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Zajęte łóżka</h2>
+            <p>Wykres prezentuje liczbę zajętych łóżek na tle dostępnych łóżek</p>
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div1 | safe}}
+            </figure>
+          
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Zajęte respiratory</h2>
+            <p>Wykres prezentuje liczbę zajętych respiratorów na tle wszystkich dostępnych</p>
+
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div2 | safe}}
+            </figure>
+          
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section bg-primary-light">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-5 mr-auto">
+            <h2 class="section-heading mb-4">Zmiana zajętych łóżek d/d</h2>
+            <p>Wykres prezentuje zmianęzajętych łóżek d/d</p>
+            <figure class="plot mx-auto">
+              {{div3|safe}}
+            </figure>
+          </div>
+            
+
+          <div class="col-lg-5 ml-auto">
+            <h2 class="section-heading mb-4">Zmiana zajętych respiratorów d/d</h2>
+            <p>Wykres prezentuje zmianęzajętych respiratorów d/d</p>
+            
+            <figure class="plot mx-auto">
+              {{div4|safe}}
+            </figure>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    
+    
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Kwarantanny</h2>
+            <p>Ilość osób na kwarantannie</p>
+
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div5 | safe}}
+            </figure>
+          
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+   {% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content%}
+  
+
+
+    <div class="hero-v1">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mr-auto text-center text-lg-left">
+            <span class="d-block subheading">Monitorujemy epidemie</span>
+            <h1 class="heading mb-3">COVID-19 w Polsce</h1>
+            <p class="mb-5">Portal obywatelski z danymi dotyczącymi epidemii COVID-19 </p>
+            <p class="mb-4"><a href="https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho#" class="btn btn-primary">
+            Przejdź do arkusza kalkulacyjnego</a></p>
+
+
+
+          </div>
+          <div class="col-lg-6">
+            <figure class="illustration">
+              <img src="{% static 'images/illustration.png' %}" alt="Image" class="img-fluid">
+            </figure>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="site-section stats">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Najnowsze dane</h2>
+            <p>Dane z ostatniego raportu Ministerstwa Zdrowia</p>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/018-coronavirus.svg' %}" alt="Image">
+              <strong class="d-block number">{{ cases.new_cases |floatformat:"0" }}</strong>
+              <span class="label">Nowe przypadki</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/030-death.svg' %}" alt="Image">
+              <strong class="d-block number">{{ cases.new_deaths |floatformat:"0"}}</strong>
+              <span class="label">Zgony</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/018-coronavirus.svg' %}" alt="Image">
+              <strong class="d-block number">{{cases.active_cases |floatformat:"0"}}</strong>
+              <span class="label">Aktywne przypadki</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/020-ambulance.svg' %}" alt="Image">
+              <strong class="d-block number">{{hosp.hospitalized |floatformat:"0"}}</strong>
+              <span class="label">Zajęte łóżka "covidowe"</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/037-lungs.svg' %}" alt="Image">
+              <strong class="d-block number">{{hosp.icu|floatformat:"0"}}</strong>
+              <span class="label">Zajęte respiratory</span>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="data">
+              <img class="img-icon" src= "{% static 'images/svg/015-virus transmission.svg' %}" alt="Image">
+
+              <strong class="d-block number">{{avg}}</strong>
+              <span class="label">Siedmiodniowa średnia zachorowań na 100 tyś. mieszkańców</span>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <figure class="img-play-vid">
+              <img src="{% static 'images/hero_1.jpg' %}" alt="Image" class="img-fluid">
+            </figure>
+          </div>
+          <div class="col-lg-5 ml-auto">
+            <h2 class="mb-4 section-heading">Dlaczego to robimy?</h2>
+            <p>W walce z epidemią dane są kluczowe. Pozwalają śledzić przebieg epidemii, identyfikować zagrożenia i zapobiegać najgorszym
+              scenariuszom. Uważamy także, że otwarty dostęp do przejrzyście prezentowanych danych jest podstawowym prawem obywatelskim,
+              które pozwala weryfikować i oceniać posunięcia rządzących. Chcemy także dostarczać rzetelnej, zweryfikowanej wiedzy na temat wirusa i pandemii, poprzez kierowanie Was
+              do sprawdzonych źródeł
+            </p>
+            <p class="mb-4"></p><a href="#" class="btn btn-primary">Przejdź do zasobów</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-7 mx-auto text-center">
+            <span class="subheading">Źródła danych</span>
+            <h2 class="mb-4 section-heading">Skąd pochodzą nasze dane?</h2>
+            <p>Demokratyczny dostęp do danych musi szanować źródła.</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 ">
+            <div class="row mt-5 pt-5">
+              <div class="col-lg-6 do ">
+                <h3>Źródła danych w arkuszu:</h3>
+                <ul class="list-unstyled">
+                  <li>Ministerstwo Zdrowia</li>
+                  <li>WSSE</li>
+                  <li>PSSE</li>
+                  <li>Urzędy Wojewódzkie</li>
+                  <li>Prośby o dostęp do informacji publicznej</li>
+                </ul>
+              </div>
+              <div class="col-lg-6 do ">
+                <h3>Modelowanie: </h3>
+                <ul class="list-unstyled">
+                  <li>Portal Our World In Data</li>
+                  <li>Ministerstwo Zdrowia</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+ {% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html'%}
+{% load static%}
+{% block content%}
+
+    
+
+
+    <div class="hero-v1">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mr-auto text-center text-lg-left">
+            <span class="d-block subheading">Przeglądaj dane regionalne</span>
+            <h1 class="heading mb-3">Testowanie</h1>
+            <p class="mb-5">Na tej stronie znajdziesz mapy porównujące intensywność testowania w regonach</p>
+            <p class="mb-4"><a href="#" class="btn btn-primary">Otwórz dane w arkuszu</a></p>
+
+
+
+          </div>
+          <div class="col-lg-6">
+            <figure class="illustration-2">
+              <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+            </figure>
+          </div>
+          <div class="col-lg-6"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MAIN -->
+    
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+            <h2 class="section-heading">Dzienna liczba wykonanych testów na 100 tyś mieszkańców</h2>
+            <p>Średnia 7 dniowa</p>
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div1 | safe}}
+            </figure>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="site-section bg-primary-light">
+        <div class="container">
+          <div class="row mb-3">
+            <div class="col-lg-7 text-center mx-auto">
+              <h2 class="section-heading">Procent testów pozytywnych</h2>
+              <p>Średnia 7 dniowa</p>
+            </div>
+            <div class="col-lg-9 text-center mx-auto">
+              <figure class="plot mx-auto">
+                {{ div2 | safe}}
+              </figure>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+
+
+
+{%endblock%}

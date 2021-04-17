@@ -1,0 +1,235 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Covid &mdash; Website Template by Colorlib</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+  <link href="http://cdn.pydata.org/bokeh/release/bokeh-2.3.1.min.css" rel=”stylesheet” type=”text/css”>
+  <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.1.min.css" rel=”stylesheet” type=”text/css”>
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css '%}">
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/flaticon-covid/font/flaticon.css' %}">
+  <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+
+
+  <div id="overlayer"></div>
+  <div class="loader">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+
+  <div class="site-wrap">
+
+    <div class="site-mobile-menu site-navbar-target">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+
+    
+    <header class="site-navbar light js-sticky-header site-navbar-target" role="banner">
+
+      <div class="container">
+        <div class="row align-items-center">
+
+          <div class="col-6 col-xl-2">
+            <div class="mb-0 site-logo"><a href="{% url 'index' %}" class="mb-0">Dane COVID-19<span class="text-primary">.</span> </a></div>
+          </div>
+
+          <div class="col-12 col-md-10 d-none d-xl-block">
+            <nav class="site-navigation position-relative text-right" role="navigation">
+
+              <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
+                <li
+                {% if '/' == request.path %}
+                  class = "active"
+                {% endif %}>
+                <a href="{% url 'index' %}" class="nav-link">Strona główna</a></li>
+                <li
+                {% if 'regions' in request.path %}
+                  class = "has-children active"
+                {% else %}
+                  class = "has-children"
+                {% endif %}><a href="{% url 'regions' %}" class="nav-link">Dane Lokalne</a>
+                  <ul class="dropdown">
+                    <li
+                    {% if 'case_map' in request.path %}
+                      class = "active"
+                    {% endif %}><a href="{% url 'case_map' %}" class="nav-link">Zachorowania</a></li>
+                    <li
+                    {% if 'test_map' in request.path %}
+                      class = "active"
+                    {% endif %}><a href="{% url 'test_map' %}" class="nav-link">Testy</a></li>
+                    <li
+                    {% if 'hosp_map' in request.path %}
+                      class = "active"
+                    {% endif %}><a href="{% url 'hosp_map' %}" class="nav-link">Hospitalizacje</a></li>
+                    <li
+                    {% if 'region-' in request.path %}
+                      class = "has-children active"
+                    {% else %}
+                      class = "has-children"
+                    {% endif %}><a>Regiony</a>
+                      <ul class="dropdown pre-scrollable" role="menu" aria-labelledby="menu1">
+                        <li><a href="{% url 'region' 'dolnoslaskie' %}" class="nav-link">Dolnośląskie</a></li>
+                        <li><a href="{% url 'region' 'kujawsko_pomorskie' %}" class="nav-link">Kuj-Pom</a></li>
+                        <li><a href="{% url 'region' 'lubelskie' %}" class="nav-link">Lubuskie</a></li>
+                        <li><a href="{% url 'region' 'lubuskie' %}" class="nav-link">Lubelskie</a></li>
+                        <li><a href="{% url 'region' 'lodzkie' %}" class="nav-link">Łódzkie</a></li>
+                        <li><a href="{% url 'region' 'malopolskie' %}" class="nav-link">Małopolskie</a></li>
+                        <li><a href="{% url 'region' 'mazowieckie' %}" class="nav-link">Mazowieckie</a></li>
+                        <li><a href="{% url 'region' 'opolskie' %}" class="nav-link">Opolskie</a></li>
+                        <li><a href="{% url 'region' 'podkarpackie' %}" class="nav-link">Podkarpackie</a></li>
+                        <li><a href="{% url 'region' 'pomorskie' %}" class="nav-link">Pomorskie</a></li>
+                        <li><a href="{% url 'region' 'slaskie' %}" class="nav-link">Śląskie</a></li>
+                        <li><a href="{% url 'region' 'swietokrzyskie' %}" class="nav-link">Świętokrzyskie</a></li>
+                        <li><a href="{% url 'region' 'warminsko_mazurskie' %}" class="nav-link">War-Maz</a></li>
+                        <li><a href="{% url 'region' 'wielkopolskie' %}" class="nav-link">Wielkopolskie</a></li>
+                        <li><a href="{% url 'region' 'zachodniopomorskie' %}" class="nav-link">Zach-Pom</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li
+                {% if 'cases' in request.path %}
+                  class = "active"
+                {% endif %}>
+                  <a href="{% url 'cases' %}" class="nav-link">Zachorowania</a>
+                </li>
+                <li
+                {% if 'hospitals' in request.path %}
+                  class = "active"
+                {% endif %}>
+                  <a href="{% url 'hospitals' %}" class="nav-link">Hospitalizacje</a></li>
+                <li 
+                {% if 'testing' in request.path %}
+                  class = "active"
+                  {% endif %}>
+                  <a href="{% url 'testing' %}" class="nav-link">Testowanie</a></li>
+                <li
+                {% if 'vacc' in request.path %}
+                  class = "active"
+                {% endif %}>
+                  <a href="{% url 'vacc'%}" class="nav-link">Szczepienia</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+
+
+          <div class="col-6 d-inline-block d-xl-none ml-md-0 py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle float-right"><span class="icon-menu h3 text-black"></span></a></div>
+
+        </div>
+      </div>
+    </header>
+    <!-- Main content -->
+    {% block content %} {% endblock %}
+
+    <div class="site-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <h2 class="footer-heading mb-4">Uwagi</h2>
+            <p>Jeśli znajdziesz błędy w danych, uważasz, że coś mogłoby zostać zrobione lepiej lub znajdziesz nieścisłości
+              w podanych przez nas źródłach nie wachaj się, skontaktuj się z nami pod: aaaa@aaaaa.com lub skorzystaj z formularza.
+            </p>
+            <div class="my-5">
+              <a href="#" class="pl-3 pr-3"><span class="icon-twitter"></span></a>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="row">
+              <div class="col-lg-4">
+                <h2 class="footer-heading mb-4">Przejdź do</h2>
+                <ul class="list-unstyled">
+                  <li><a href="{% url 'cases' %}">Zachorowania</a></li>
+                  <li><a href="{% url 'hospitals' %}">Hospitalizacje</a></li>
+                  <li><a href="{% url 'testing' %}">Testowanie</a></li>
+                  <li><a href="#">Dane regionalne</a></li>
+                  <li><a href="#">Formularz kontaktowy</a></li>
+                </ul>
+              </div>
+              <div class="col-lg-4">
+                <h2 class="footer-heading mb-4">Przydatne linki</h2>
+                <ul class="list-unstyled">
+                  <li><a href="https://www.gov.pl/web/gis/jak-sie-zachowac-kiedy-mam-objawy-covid-19-co-zrobic-jak-dowiedzialemam-sie-o-dodatnim-wyniku">Podejrzewasz zachorowanie?</a></li>
+                  <li><a href="https://www.gov.pl/web/koronawirus/aktualne-zasady-i-ograniczenia">Obecne obostrzenia</a></li>
+                  <li><a href="https://www.gov.pl/web/szczepimysie">Zaszczep się</a></li>
+                </ul>
+              </div>
+              <div class="col-lg-4">
+                <h2 class="footer-heading mb-4">Źródła wiedzy</h2>
+                <ul class="list-unstyled">
+                  <li><a href="https://covid19.who.int/">WHO</a></li>
+                  <li><a href="https://ourworldindata.org/coronavirus">Our World in Data</a></li>
+                  <li><a href="https://naukaprzeciwpandemii.pl/">Nauka przeciw pandemii</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row text-center">
+          <div class="col-md-12">
+            <div class="border-top pt-5">
+              <p class="copyright"><small>
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart text-danger" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></small></p>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- .site-wrap -->
+  
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/jquery-ui.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+  <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+  <script src="{% static 'js/aos.js' %}"></script>
+  <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+  <script src="{% static 'js/jquery.sticky.js' %}"></script>
+  <script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+  <script src="http://cdn.pydata.org/bokeh/release/bokeh-2.3.1.min.js"></script>
+  <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.1.min.js"></script>
+  {{ script1 | safe }}
+  {{ script2 | safe }}
+  {{ script3 | safe }}
+  {{ script4 | safe }}
+  {{ script5 | safe }}
+  {{ script6 | safe }}
+  {{ script7 | safe }}
+  {{ script8 | safe }}
+  <script src="{% static 'js/main.js' %}"></script>
+  
+  
+</body>
+</html>
