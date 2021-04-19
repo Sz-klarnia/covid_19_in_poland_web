@@ -6,5 +6,5 @@ class ScheduledTasksConfig(AppConfig):
     name = 'scheduled_tasks'
 
     def ready(self):
-        from scheduled_tasks import schedulers
-            schedulers.start()
+        from .schedulers import start
+        start()

@@ -6,8 +6,9 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from populate_db import *
-from .models import *
+from .populate_db import *
+from .models import Mobility
+import io
 # If modifying these scopes, delete the file token.json.
 
 def check_for_new_data():
@@ -50,8 +51,9 @@ def get_new_modelling_data():
     rest = pd.read_csv(io.StringIO(response.decode('utf-8')))
     rest = rest[rest.CountryName == "Poland"]
 
-    modelling = pd.DataFrame(Moblity.objects.values())
-
+    modelling = pd.DataFrame(Mobility.objects.values())
+    print(modelling)
     prepare_model_data(data,rest,modelling)
+    print("DONE!")
     
     

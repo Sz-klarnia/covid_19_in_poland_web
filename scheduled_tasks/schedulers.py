@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
-from tasks import *
+from .tasks import *
 
 def start():
     scheduler = BackgroundScheduler()

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "predictions.apps.PredictionsConfig",
     "scheduled_tasks.apps.ScheduledTasksConfig",
     "regional.apps.RegionalConfig",
     "django.contrib.humanize",

@@ -431,3 +431,26 @@ class RollingMeanPer100K(models.Model):
     class Meta:
         managed = False
         db_table = 'rolling_mean_per_100k'
+
+class DailyPositivePct(models.Model):
+    date = models.DateTimeField(blank=True, primary_key=True)
+    dolnoslaskie = models.FloatField(blank=True, null=True)
+    kujawsko_pomorskie = models.FloatField(db_column='kujawsko-pomorskie', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    lubelskie = models.FloatField(blank=True, null=True)
+    lubuskie = models.FloatField(blank=True, null=True)
+    lodzkie = models.FloatField(blank=True, null=True)
+    malopolskie = models.FloatField(blank=True, null=True)
+    mazowieckie = models.FloatField(blank=True, null=True)
+    opolskie = models.FloatField(blank=True, null=True)
+    podkarpackie = models.FloatField(blank=True, null=True)
+    podlaskie = models.FloatField(blank=True, null=True)
+    pomorskie = models.FloatField(blank=True, null=True)
+    slaskie = models.FloatField(blank=True, null=True)
+    swietokrzyskie = models.FloatField(blank=True, null=True)
+    war_maz = models.FloatField(db_column='war-maz', blank=True, null=True)  # Field renamed to remove unsuitable characters.
+    wielkopolskie = models.FloatField(blank=True, null=True)
+    zachodniopomorskie = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'daily_positive_pct'

@@ -5,7 +5,7 @@ import gspread
 import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
-from scripts import *
+from .scripts import *
 from sqlalchemy import create_engine
 
 def populate_database():
@@ -67,10 +67,10 @@ def populate_database():
     # get vaccinations report
     df = get_vaccination_report(sheet)
     df.to_sql("vaccinations",con=engine,if_exists="replace")
-    
+    print("database populated")
 
 
-def prepare_model_data(data,restrictions,mobility):
+def prepare_model_data(data,rest,mobility):
     """
     Function used to get latest avaliable modelling data to the database. Function takes dataframes with data.
     """
@@ -82,7 +82,8 @@ def prepare_model_data(data,restrictions,mobility):
     rest["Date"] = [pd.to_datetime(".".join([str(x)[0:4],str(x)[4:6],str(x)[6:]])) for x in rest["Date"]]
     rest = rest.rename({"CountryName":"location","Date":"date"},axis=1)
 
-
+    data["location"] = "Poland"
+    mobility["location"] = "Poland"
     # saving only data from the last 90 days
     data = data[-90:]
     rest = rest[-90:]
@@ -91,26 +92,30 @@ def prepare_model_data(data,restrictions,mobility):
     # create common key column for in all dfs to merge
     rest["location_date"] = [rest["location"].iloc[i]+" "+str(rest["date"].iloc[i])[:-9] for i in range(len(rest))]
     data["location_date"] = [data["location"].iloc[i]+" "+str(data["date"].iloc[i]) for i in range(len(data))]
-    mobility["location_date"] = [mobility["location"].iloc[i]+" "+str(mobility["date"].iloc[i])[:-9] for i in range(len(mobility))]
+    mobility["location_date"] = [mobility["location"].iloc[i]+" "+mobility["date"].iloc[i] for i in range(len(mobility))]
 
-    #merging
+    # merging
 
-    data = data.merge(rest,how="inner",on="location_date").merge(mobility,how="inner",on="location_date")
-
+    data = data.merge(rest,how="left",on="location_date").merge(mobility,how="left",on="location_date")
     # filling empty values
+    data = data.fillna(method="bfill")
     data = data.fillna(method="ffill")
-    data = data.fillna(0)
-
     # dropping duplicated cols
-    data.drop(["location_y","date_y","location_date","location_x","date_x"],axis=1,inplace=True)
+    data.drop(["location_y","date_y","location_date","location_x","location","date"],axis=1,inplace=True)
+
 
     # droping unneceseary cols
-    data.drop(['handwashing_facilities',
-       "iso_code","continent","new_deaths","new_deaths_smoothed",'new_cases_smoothed_per_million',"icu_patients","hosp_patients","weekly_icu_admissions",
+    data.drop(["new_deaths","new_deaths_smoothed",'new_cases_smoothed_per_million',"hosp_patients",
            "new_tests_smoothed","new_tests_smoothed_per_thousand","total_cases","new_cases","new_cases_smoothed",
           "new_tests","total_tests","total_vaccinations","people_vaccinated","people_fully_vaccinated","new_vaccinations",
-          "new_vaccinations_smoothed","new_vaccinations_smoothed_per_million","population",'handwashing_facilities', 'hospital_beds_per_thousand',
-          "weekly_hosp_admissions","total_tests_per_thousand","new_deaths_smoothed_per_million","tests_units","total_deaths"],axis=1,inplace=True)
+          "new_vaccinations_smoothed","new_vaccinations_smoothed_per_million","total_tests_per_thousand","new_deaths_smoothed_per_million","tests_units","total_deaths"],axis=1,inplace=True)
     
+    # cast date to datetime
+    data["date_x"] = data["date_x"].apply(lambda x: pd.to_datetime(x))
+    data = data.append(pd.DataFrame(np.zeros((60,data.shape[1])),columns=data.columns),ignore_index=True)
+    # create empty extension of the data 60 days ahead with date column filled
+    data["date_x"].iloc[90:150] = pd.Series(pd.date_range(data["date_x"].iloc[89],data["date_x"].iloc[89]+ pd.Timedelta(59,"D")))
+    print(data)
+    # write to database
     engine = create_engine('postgresql+psycopg2://postgres:figa997@localhost:5432/covid_19_in_poland')
     data.to_sql("modelling_data",con=engine,if_exists="replace")
