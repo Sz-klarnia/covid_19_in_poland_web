@@ -7,6 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 from .scripts import *
 from sqlalchemy import create_engine
+import time
 
 def populate_database():
     """
@@ -29,7 +30,7 @@ def populate_database():
     
     # get spreadsheet - COVID-19 in Poland
     sheet = client.open("Kopia pliku COVID-19 w Polsce")
-    
+    time.sleep(1)
     # cases report
     df = get_cases_report(sheet)
     df.to_sql("cases",con=engine,if_exists="replace")
@@ -60,7 +61,7 @@ def populate_database():
     data = get_regional_hospitalization_data(sheet)
     for key in data.keys():
         data[key].to_sql("hosp_in"+key,con=engine,if_exists="replace")
-        
+    time.sleep(1)
     # get spreadsheet - vaccinations data
     sheet = client.open("Kopia COVID-19 w Polsce - Szczepienia")
     
@@ -115,7 +116,7 @@ def prepare_model_data(data,rest,mobility):
     data = data.append(pd.DataFrame(np.zeros((60,data.shape[1])),columns=data.columns),ignore_index=True)
     # create empty extension of the data 60 days ahead with date column filled
     data["date_x"].iloc[90:150] = pd.Series(pd.date_range(data["date_x"].iloc[89],data["date_x"].iloc[89]+ pd.Timedelta(59,"D")))
-    print(data)
+
     # write to database
     engine = create_engine('postgresql+psycopg2://postgres:figa997@localhost:5432/covid_19_in_poland')
     data.to_sql("modelling_data",con=engine,if_exists="replace")

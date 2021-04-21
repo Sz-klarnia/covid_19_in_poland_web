@@ -1,52 +1,61 @@
 from keras.layers import Activation, Dense, Dropout, LSTM
 from keras.models import Sequential,load_model
 from .models import ModellingData
+import numpy as np
 from .data_prep import *
 import pandas as pd
 from sqlalchemy import create_engine
+from sklearn.preprocessing import MinMaxScaler
+import warnings
+warnings.filterwarnings("ignore")
 
 def make_predictions(mobility_level,restriction_levels,vaccination_speed,table_name):
-    data = ModellingData.objects.values()
+    data = pd.DataFrame(ModellingData.objects.values())
 
+    date = data["date_x"][90:150]
     data = fill_mobility_columns(data,mobility_level)
     data = fill_restrictions_column(data,restriction_levels),
     data = fill_vaccination_speed(data,vaccination_speed)
-
     data = general_data_prep(data)
-
     cases_model = load_model('covid_model.keras')
 
-    cols_not = ["total_deaths_per_million","new_deaths_per_million","icu_patients_per_million","hosp_patients_per_million",
-            'new_tests_per_thousand', 'positive_rate','tests_per_case','weekly_icu_admissions_per_million','weekly_hosp_admissions_per_million',"reproduction_rate","total_cases_per_million"]
+    cols_not = ["total_deaths_per_million","new_deaths_per_million","hosp_patients_per_million",
+            'new_tests_per_thousand', 'positive_rate','tests_per_case',"reproduction_rate","total_cases_per_million"]
+        
 
-    cases_data = data.drop(cols_not,axis=1)
+    cases_data = data.drop(cols_not,axis=1).to_numpy()
 
     for i in range(60):
         pred_data = cases_data[i:90+i,:]
         value = cases_model.predict(pred_data.reshape(1,90,24))
         cases_data[90+i,0] = value
 
-    cases_predictions = cases_data[90:,0]
-
+    with open('scaler.pkl', 'rb') as file:
+        scaler = load(file)
+    reverse_scaler = MinMaxScaler()
+    reverse_scaler.min_,reverse_scaler.scale_ = scaler.min_[1], scaler.scale_[1]
+    cases_predictions = pd.Series(reverse_scaler.inverse_transform(cases_data[90:,0].reshape(-1,1)).reshape(1,-1)[0])
     hosp_model = load_model("hosp_model.keras")
 
-    cols_not = ["total_deaths_per_million","new_deaths_per_million","icu_patients_per_million",
-            'new_tests_per_thousand', 'positive_rate','tests_per_case','weekly_icu_admissions_per_million','weekly_hosp_admissions_per_million',"reproduction_rate","total_cases_per_million"]
+    cols_not = ["total_deaths_per_million","new_deaths_per_million",'new_tests_per_thousand', 'positive_rate','tests_per_case',
+    "reproduction_rate","total_cases_per_million"]
 
-    hosp_data = data.drop(cols_not,axis=1)
+    hosp_data = data.drop(cols_not,axis=1).to_numpy()
 
     for i in range(60):
         pred_data = hosp_data[i:90+i,:]
         value = hosp_model.predict(pred_data.reshape(1,90,25))
         hosp_data[90+i,1] = value
-    hosp_predictions = hosp_data[90:,1]
-
-    predictions = pd.DataFrame({"new_cases":cases_predictions,"hospitalizations":hosp_predictions})
+    reverse_scaler = MinMaxScaler()
+    reverse_scaler.min_,reverse_scaler.scale_ = scaler.min_[5], scaler.scale_[5]
+    hosp_predictions = pd.Series(reverse_scaler.inverse_transform(hosp_data[90:,1].reshape(-1,1)).reshape(1,-1)[0])
+    
+    predictions = pd.DataFrame({"new_cases":cases_predictions,"hospitalizations":hosp_predictions,"date":date.to_list()})
 
     engine = create_engine('postgresql+psycopg2://postgres:figa997@localhost:5432/covid_19_in_poland')
-    data.to_sql(table_name,con=engine,if_exists="replace")
+    predictions.to_sql(table_name,con=engine,if_exists="replace")
 
-    def run_predictions():
+def run_predictions():
         """
         Running different prediction scenarios. Currently, there are 12 different scenarions defined user will be able :
 
@@ -63,7 +72,6 @@ def make_predictions(mobility_level,restriction_levels,vaccination_speed,table_n
         11. Full lockdown, mobility decreased by 60%, vaccinations speed up
         12. Lifting all restrictions, mobility comes back to base levels, vaccination slow down
         """
-        print("running_predicions")
         # 1
         make_predictions(0,0,1,"scenario 1")
         # 2

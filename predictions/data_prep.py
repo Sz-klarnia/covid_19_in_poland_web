@@ -1,7 +1,9 @@
 import pandas as pd
 from .models import ModellingData
 from statsmodels.tsa.ar_model import AutoReg
-from pickle import loads
+from pickle import load
+from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
 def fill_mobility_columns(df,level):
     """
@@ -16,7 +18,7 @@ def fill_mobility_columns(df,level):
        'mobility_work']
 
     for col in columns:
-        df["column"][90:150] = level
+        df[col][90:150] = level
     
     return df
 
@@ -32,20 +34,20 @@ def fill_restrictions_column(df,restriction_levels):
     """
 
     # restriction codes with their maximum values
-    cols =  {'C1_School closing':3 , 
-    'C2_Workplace closing': 3, 
-    'C3_Cancel public events': 2,
-    'C4_Restrictions on gatherings': 4, 
-    'C5_Close public transport':2,
-    'C6_Stay at home requirements':3,
-    'C7_Restrictions on internal movement':2,
-    'C8_International travel controls':4,
-    'H1_Public information campaigns':2,
-    'H2_Testing policy':3, 
-    'H3_Contact tracing':2, 
-    'H6_Facial Coverings':4,
-    'H7_Vaccination policy':5, 
-    'H8_Protection of elderly people':3}
+    cols =  {'c1_school_closing':3 , 
+    'c2_workplace_closing': 3, 
+    'c3_cancel_public_events': 2,
+    'c4_restrictions_on_gatherings': 4, 
+    'c5_close_public_transport':2,
+    'c6_stay_at_home_requirements':3,
+    'c7_restrictions_on_internal_movement':2,
+    'c8_international_travel_controls':4,
+    'h1_public_information_campaigns':2,
+    'h2_testing_policy':3, 
+    'h3_contact_tracing':2, 
+    'h6_facial_coverings':4,
+    'h7_vaccination_policy':5, 
+    'h8_protection_of_elderly_people':3}
 
     for col,value in cols.items():
         df[col][90:150] = value*restriction_levels
@@ -59,40 +61,28 @@ def fill_vaccination_speed(df,speed):
     predict by AutoReg model with lag set to 10, calculate difference between last value and today, multiply by speed.
 
     """
+    df = df[0]
     cols = ['total_vaccinations_per_hundred',
        'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred']
 
-    for cols in col:
-        autoregressor = AutoReg(data[col][0:90], lags=10).fit()
-        data[col][90:150] = autoregressor.predict(start=90,end=149)
-        diffs = [data[col][i]-data[col][i-1] for i in range(90:150)] * speed
-        data[col[90:150]] = [data[col][i-1]+diffs[i] for i in range(90:150)]
+    for col in cols:
+        autoregressor = AutoReg(df[col][0:90], lags=10).fit()
+        df[col][90:150] = autoregressor.predict(start=90,end=149)
+        diffs = [df[col][i]-df[col][i-1]*speed for i in range(90,150)]
+        df[col][90:150] = [df[col][i-1]+diffs[i-90] for i in range(90,150)]
         
     return df
 
 def general_data_prep(df):
     """ data prep same for each model - removing partial indexes, scaling data that's constant for each country and
     differen between them"""
-    socioecon = ['population_density', 'median_age', 'aged_65_older',
-       'aged_70_older', 'gdp_per_capita', 'extreme_poverty',
-       'cardiovasc_death_rate', 'diabetes_prevalence', 'female_smokers',
-       'male_smokers',
-       'life_expectancy', 'human_development_index']
-    df.drop(socioecon,axis=1,inplace=True)
-    # dropping partial indexes
-    df.drop(["stringency_index","ContainmentHealthIndex"],axis=1,inplace=True)
+    # dropping aggregate indexes
+    df.drop(["stringency_index","containmenthealthindex","index"],axis=1,inplace=True)
     
     
     # dropping date - we know that data is ordered in the right way and datetime fields are not scalable
-    df.drop("date",axis=1,inplace=True)
-    # all countries have a values in vaccinations fields before start of vaccination programme, these must be put to 0
-    vacc = ['total_vaccinations_per_hundred',
-       'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred']
-    for country in df.location.unique():
-        start_country = df[df.location == country].index[0]
-        start_vacc = df[(df.location==country)&(df.total_vaccinations_per_hundred < 3)].index[0]
-        for col in vacc:
-            df[col][start_country:start_vacc] = 0
+    df.drop("date_x",axis=1,inplace=True)
+
             
     # in some places values are negative, and they can't be. Filling these values with a 0. Location col is a string col
     # mobility cols naturally have values below zero
@@ -107,16 +97,14 @@ def general_data_prep(df):
     df = df.interpolate("linear")
     
     # saving columns to paste back after scaling
-    locs = df.location
-    df.drop("location",axis=1,inplace=True)
     cols = df.columns
 
     # scaling chosen columns
-    scaler = load(open('scaler.pkl', 'rb'))
+    with open('scaler.pkl', 'rb') as file:
+        scaler = load(file)
     df = scaler.transform(df)
     # reconstructing dataframe
     df = pd.DataFrame(df,columns=cols)
-    df["location"] = locs
     
     
     mobility = ['mobility_recreation', 'mobility_grocery', 'mobility_parks',
@@ -124,17 +112,22 @@ def general_data_prep(df):
     
     
     
-    restrictions = ['C1_School closing', 'C2_Workplace closing', 'C3_Cancel public events',
-       'C4_Restrictions on gatherings', 'C5_Close public transport',
-       'C6_Stay at home requirements', 'C7_Restrictions on internal movement',
-       'C8_International travel controls', 'H1_Public information campaigns',
-       'H2_Testing policy', 'H3_Contact tracing', 'H6_Facial Coverings',
-       'H7_Vaccination policy', 'H8_Protection of elderly people']
+    restrictions = ['c1_school_closing', 
+    'c2_workplace_closing', 
+    'c3_cancel_public_events',
+    'c4_restrictions_on_gatherings', 
+    'c5_close_public_transport',
+    'c6_stay_at_home_requirements',
+    'c7_restrictions_on_internal_movement',
+    'c8_international_travel_controls',
+    'h1_public_information_campaigns',
+    'h2_testing_policy',
+    'h3_contact_tracing', 
+    'h6_facial_coverings',
+    'h7_vaccination_policy', 
+    'h8_protection_of_elderly_people']
     
-    for country in data_countries.keys():
-
-        data_countries[country][mobility] = data_countries[country][mobility].shift(21).fillna(method = "bfill")
-        data_countries[country][restrictions] = data_countries[country][restrictions].shift(21).fillna(method = "bfill")
-
+    df[mobility] = df[mobility].shift(21).fillna(method = "bfill")
+    df[restrictions] = df[restrictions].shift(21).fillna(method = "bfill")
     
-    return data_countries
+    return df

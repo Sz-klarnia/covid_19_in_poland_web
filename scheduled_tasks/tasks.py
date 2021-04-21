@@ -1,6 +1,6 @@
 
 import requests
-from time import time
+import time
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -34,7 +34,7 @@ def check_for_new_data():
             token.write(creds.to_json())
 
     service = build('gmail', 'v1', credentials=creds)
-    stamp = int(time()) - 3600
+    stamp = int(time.time()) - 3600
     # Call the Gmail API
     results = service.users().messages().list(userId='me',q=f"from:notify@google.com after:{stamp}").execute()
     if results["resultSizeEstimate"] > 0:
@@ -52,7 +52,6 @@ def get_new_modelling_data():
     rest = rest[rest.CountryName == "Poland"]
 
     modelling = pd.DataFrame(Mobility.objects.values())
-    print(modelling)
     prepare_model_data(data,rest,modelling)
     print("DONE!")
     

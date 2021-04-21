@@ -112,27 +112,38 @@
                   </ul>
                 </li>
                 <li
-                {% if 'cases' in request.path %}
-                  class = "active"
+                {% if "pl" in request.path %}
+                  class = "has-children active"
+                {% else %}
+                  class="has-children"
                 {% endif %}>
-                  <a href="{% url 'cases' %}" class="nav-link">Zachorowania</a>
+                  <a>Dane krajowe</a>
+                  <ul class="dropdown">
+                    <li
+                    {% if 'pl/cases' in request.path %}
+                      class = "active"
+                    {% endif %}>
+                      <a href="{% url 'cases' %}" class="nav-link">Zachorowania</a>
+                    </li>
+                    <li
+                    {% if 'pl/hospitals' in request.path %}
+                      class = "active"
+                    {% endif %}>
+                      <a href="{% url 'hospitals' %}" class="nav-link">Hospitalizacje</a></li>
+                    <li 
+                    {% if 'pl/testing' in request.path %}
+                      class = "active"
+                      {% endif %}>
+                      <a href="{% url 'testing' %}" class="nav-link">Testowanie</a></li>
+                    <li
+                    {% if 'pl/vacc' in request.path %}
+                      class = "active"
+                    {% endif %}>
+                      <a href="{% url 'vacc'%}" class="nav-link">Szczepienia</a></li>
+                  </ul>
                 </li>
-                <li
-                {% if 'hospitals' in request.path %}
-                  class = "active"
-                {% endif %}>
-                  <a href="{% url 'hospitals' %}" class="nav-link">Hospitalizacje</a></li>
-                <li 
-                {% if 'testing' in request.path %}
-                  class = "active"
-                  {% endif %}>
-                  <a href="{% url 'testing' %}" class="nav-link">Testowanie</a></li>
-                <li
-                {% if 'vacc' in request.path %}
-                  class = "active"
-                {% endif %}>
-                  <a href="{% url 'vacc'%}" class="nav-link">Szczepienia</a></li>
-                
+                <li><a href="{% url 'predictions' %}" class="nav-link">Prognozy</a></li>
+                <li><a href="{% url 'predictions' %}" class="nav-link">Kontakt</a></li>
               </ul>
             </nav>
           </div>

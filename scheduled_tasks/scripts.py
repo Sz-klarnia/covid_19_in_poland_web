@@ -3,13 +3,14 @@ import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 
-region_list = ["0","dolnoslaskie","kujawsko-pomorskie","lubelskie","lubuskie","lodzkie","malopolskie","mazowieckie",
+region_list = ["dolnoslaskie","kujawsko-pomorskie","lubelskie","lubuskie","lodzkie","malopolskie","mazowieckie",
 "opolskie","podkarpackie","podlaskie","pomorskie","slaskie","swietokrzyskie","war-maz","wielkopolskie","zachodniopomorskie"]
 
 def prepare_cases(df):
     # drop empty columns
     df.dropna(axis=1,how="all",inplace=True)
     # change date to datetime format
+    df["Data"][212:243] = [str(x)+"0" for x in df["Data"][212:243]]
     df["Data"] = [str(df["Data"].iloc[x])+".2020" for x in (df.index[:304])] + [str(df["Data"].iloc[x])+".2021" for x in (df.index[304:])]
     
     df["Data"] = [datetime.strptime(x, "%d.%m.%Y") for x in df["Data"]]
@@ -109,7 +110,8 @@ def tests_clean(df):
     df.dropna(axis=1,how="all",inplace=True)
     df.drop("",axis=1,inplace=True)
     # change date to datetime format
-    df["Data"] = [str(df["Data"].iloc[x])+".2020" for x in (df.index[:304])] + [str(df["Data"].iloc[x])+".2021" for x in (df.index[304:])]
+    df["Data"][213:244] = [str(x)+"0" for x in df["Data"][213:244]]
+    df["Data"] = [str(df["Data"].iloc[x])+".2020" for x in (df.index[:305])] + [str(df["Data"].iloc[x])+".2021" for x in (df.index[305:])]
     
     df["Data"] = [datetime.strptime(x, "%d.%m.%Y") for x in df["Data"]]
     
@@ -152,10 +154,10 @@ def get_testing_report(spreadsheet):
     
     return df
 def get_regional_testing_data(spread,rng,percents=False):
-    df = pd.DataFrame(spread.get(rng))
-    df.columns = df.iloc[0,:]
+    df = pd.DataFrame(spread.get(rng)).iloc[1:,2:]
+    df.columns = pd.DatetimeIndex(pd.date_range(pd.to_datetime("2020/11/24",format="%Y/%m/%d"),periods=len(df.columns+1)),name="date")
+    
     df.index = region_list
-    df = df.iloc[1:,2:]
     if percents == True:
         for column in df.columns:
             df[column] = df[column].replace("","0")
@@ -175,10 +177,11 @@ def get_regional_testing_reports(spreadsheet):
     return regional_testing_data
     
 def get_regional_cases_data(spread,rng):
-    df = pd.DataFrame(spread.get(rng))
-    df.columns = df.iloc[0,:]
+    df = pd.DataFrame(spread.get(rng)).iloc[1:,1:]
+    df.columns = pd.DatetimeIndex(pd.date_range(pd.to_datetime("2020/03/04",format="%Y/%m/%d"),periods=len(df.columns+1)),name="date")
+
+   
     df.index = region_list
-    df = df.iloc[1:,1:]
     return df
 def get_regional_cases_reports(spreadsheet):
     spread = spreadsheet.get_worksheet(4)
@@ -204,6 +207,7 @@ def hospitals_clean(df):
     # drop empty columns
     df.dropna(axis=1,how="all",inplace=True)
     # change date to datetime format
+    df["Data"][212:243] = [str(x)+"0" for x in df["Data"][212:243]]
     df["Data"] = [str(df["Data"].iloc[x])+".2020" for x in (df.index[:304])] + [str(df["Data"].iloc[x])+".2021" for x in (df.index[304:])]
     
     df["Data"] = [datetime.strptime(x, "%d.%m.%Y") for x in df["Data"]]
@@ -261,22 +265,22 @@ def get_regional_hospitalization_data(spreadsheet):
     spread = spreadsheet.get_worksheet(6)
 
     regional_ranges ={
-        "dol":"B:I",
-        "kuj-pom":"J:Q",
-        "lubel":"R:Y",
-        "lubu":"Z:AG",
-        "łdz":"AH:AO",
-        "młp":"AP:AW",
-        "maz":"AX:BE",
-        "opo":"BF:BM",
-        "pdk":"BN:BU",
-        "pod":"BV:CC",
-        "pom":"CD:CK",
-        "sl":"CL:CS",
-        "św":"CT:DA",
-        "w-m":"DB:DI",
-        "wlkp":"DJ:DQ",
-        "zach":"DR:DY"
+        "dolnoslaskie":"B:I",
+        "kujawsko_pomorskie":"J:Q",
+        "lubelskie":"R:Y",
+        "lubuskie":"Z:AG",
+        "lodzkie":"AH:AO",
+        "malopolskie":"AP:AW",
+        "mazowieckie":"AX:BE",
+        "opolskie":"BF:BM",
+        "podkarpackie":"BN:BU",
+        "podlaskie":"BV:CC",
+        "pomorskie":"CD:CK",
+        "slaskie":"CL:CS",
+        "swietokrzyskie":"CT:DA",
+        "warminsko_mazurskie":"DB:DI",
+        "wielkopolskie":"DJ:DQ",
+        "zachodniopomorskie":"DR:DY"
     }
     regional_dfs = {}
     for key in regional_ranges.keys():
@@ -285,7 +289,7 @@ def get_regional_hospitalization_data(spreadsheet):
 def vacc_clean(spread):
     data = spread.get_all_records(head=2)
     df = pd.DataFrame.from_dict(data)
-    df = df.iloc[1:,:]
+    df = df.iloc[1:,1:]
     df.drop("#",axis=1,inplace=True)
     df.drop("?",axis=1,inplace=True)
     # drop empty columns
@@ -313,7 +317,7 @@ def vacc_clean(spread):
         df.columns[15]:"used",
     }
     df = df.rename(column_renames,axis=1)
-    
+    df.columns = [x for x in df.columns[:23]] + [x for x in region_list]
     df = df.fillna(0)
     # make columns numeric
     for column in df.columns[1:]:
