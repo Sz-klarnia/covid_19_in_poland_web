@@ -5,7 +5,13 @@ from pickle import load
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
-def fill_mobility_columns(df,level):
+def interpolate_column(column,rng,value):
+    column[-rng:] = np.NaN
+    column.iloc[-1] = value
+    column = column.interpolate()
+    return column
+
+def fill_mobility_columns(df,level,rapid=False):
     """
     Function prepares mobility columns in the dataframe for one forward prediction,filling values ahead with chosen threshold
 
@@ -13,16 +19,22 @@ def fill_mobility_columns(df,level):
     df - data frame with mobility columns empty in future dates
     level - level of change in mobility in the future from the baseline in Google mobility report for Poland
     """
+    
+
+
     columns = ['mobility_recreation',
        'mobility_grocery', 'mobility_parks', 'mobility_transit',
        'mobility_work']
-
-    for col in columns:
-        df[col][90:150] = level
+    if rapid == True:
+        for col in columns:
+            df[col][90:] = level
+    else:
+        for col in columns:
+            df[col]= interpolate_column(df[col], 60, level)
     
     return df
 
-def fill_restrictions_column(df,restriction_levels):
+def fill_restrictions_column(df,restriction_level,rapid=False):
     """
     Function prepares restriction columns in the dataframe for one forward prediction,filling values ahead with chosen threshold. For now, the function can
     only assume 4 basic values - no restrictions, mild restrictions, severe restrictions and full lockdown, represented as: 0, 0.33, 0.66, 1. In
@@ -34,7 +46,7 @@ def fill_restrictions_column(df,restriction_levels):
     """
 
     # restriction codes with their maximum values
-    cols =  {'c1_school_closing':3 , 
+    cols =  {'c1_school_closing':3, 
     'c2_workplace_closing': 3, 
     'c3_cancel_public_events': 2,
     'c4_restrictions_on_gatherings': 4, 
@@ -48,28 +60,69 @@ def fill_restrictions_column(df,restriction_levels):
     'h6_facial_coverings':4,
     'h7_vaccination_policy':5, 
     'h8_protection_of_elderly_people':3}
-
+    # rapid change - value changes in one step to target value
     for col,value in cols.items():
-        df[col][90:150] = value*restriction_levels
-    
+        if rapid == True:
+            df[col][90:] = restriction_level
+            continue
+        if restriction_level == 0:
+            df[col][90:] = df[col][89]
+            continue
+        
+        target_val = df[col][89] + restriction_level
+
+        # checking if target value is not larger than
+        if target_val > value:
+            target_val = value
+        if target_val < 0:
+            target_val = 0
+        
+        if restriction_level > 0:
+            step_change = 1
+        if restriction_level < 0:
+            step_change = -1
+        
+        if df[col][89] == target_val:
+            df[col][90:] = target_val
+            continue
+        # step 1
+        # adding value
+        df[col][90:100] = df[col][89] + step_change
+        # checking if target reached
+        if df[col][99] == target_val:
+            df[col][100:] = target_val
+            continue
+        # step 2
+        # adding value
+        df[col][100:110] = df[col][99] + step_change
+        # checking if target reached
+        if df[col][109] == target_val:
+            df[col][110:] = target_val
+            continue
+        # step 3 - more steps than three currently not supported
+        # adding value
+        df[col][110:120] = df[col][109] + step_change
+        # checking if target reached
+        if df[col][119] == target_val:
+            df[col][120:] = target_val
+            continue
+
+
+        
     return df
 
-def fill_vaccination_speed(df,speed):
+def fill_vaccination_speed(df,target):
     """
     Function prepares vaccination columns for prediction, filling the future values according to the chosen speed. Currently function only accepts
     three values of the speed parameter: slower (represented as 0.5), constant (represented as 1) and faster (1.5). Filling algorythm:
     predict by AutoReg model with lag set to 10, calculate difference between last value and today, multiply by speed.
 
     """
-    df = df[0]
     cols = ['total_vaccinations_per_hundred',
        'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred']
-
-    for col in cols:
-        autoregressor = AutoReg(df[col][0:90], lags=10).fit()
-        df[col][90:150] = autoregressor.predict(start=90,end=149)
-        diffs = [df[col][i]-df[col][i-1]*speed for i in range(90,150)]
-        df[col][90:150] = [df[col][i-1]+diffs[i-90] for i in range(90,150)]
+    target_vals = [1.33,1,0.66]
+    for i in range(len(cols)):
+        df[cols[i]] = interpolate_column(df[cols[i]], 60, target*target_vals[i])
         
     return df
 
@@ -126,8 +179,12 @@ def general_data_prep(df):
     'h6_facial_coverings',
     'h7_vaccination_policy', 
     'h8_protection_of_elderly_people']
+    vacc = ['total_vaccinations_per_hundred',
+       'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred']
     
     df[mobility] = df[mobility].shift(21).fillna(method = "bfill")
     df[restrictions] = df[restrictions].shift(21).fillna(method = "bfill")
+    df[vacc] = df[vacc].shift(21).fillna(method = "bfill")
+
     
     return df

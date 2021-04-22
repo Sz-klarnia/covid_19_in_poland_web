@@ -399,7 +399,7 @@ body:after {
             content: "\e315";
             right: 20px; }
           .site-navbar .site-navigation .site-menu .has-children .dropdown > li.has-children > .dropdown, .site-navbar .site-navigation .site-menu .has-children .dropdown > li.has-children > ul {
-            right: 100%;
+            left: 100%;
             top: 0; }
       .site-navbar .site-navigation .site-menu .has-children:hover > a, .site-navbar .site-navigation .site-menu .has-children:focus > a, .site-navbar .site-navigation .site-menu .has-children:active > a {
         color: #2422bb; }
@@ -673,7 +673,10 @@ body:after {
       font-weight: bold; }
 
 .site-section {
-  padding: 90px 0; }
+  padding-top: 10px;
+  padding-left: 90px;
+  padding-bottom: 10px;
+  padding-right: 90px; }
 
 .service {
   background: #fff;

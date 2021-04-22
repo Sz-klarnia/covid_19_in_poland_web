@@ -103,6 +103,24 @@ def prepare_model_data(data,rest,mobility):
     data = data.fillna(method="ffill")
     # dropping duplicated cols
     data.drop(["location_y","date_y","location_date","location_x","location","date"],axis=1,inplace=True)
+    # adding informations about british covid variant  
+    data.date_x = data.date_x.apply(lambda x: pd.to_datetime(x))  
+    data["british_strain"] = 0
+    strain_data = {
+        1:pd.to_datetime("01.02.2021",dayfirst=True),
+        2:pd.to_datetime("20.02.2021",dayfirst=True),
+        3:pd.to_datetime("07.03.2021",dayfirst=True),
+        4:pd.to_datetime("15.03.2021",dayfirst=True)}
+
+    idx1 = data[data.date_x==strain_data[1]].index[0]
+    idx2 = data[data.date_x==strain_data[2]].index[0]
+    idx3 = data[data.date_x==strain_data[3]].index[0]
+    idx4 = data[data.date_x==strain_data[4]].index[0]
+    data["british_strain"][idx1:idx2] = 1
+    data["british_strain"][idx2:idx3] = 2
+    data["british_strain"][idx3:idx4] = 3
+    data["british_strain"][idx4:] = 4
+
 
 
     # droping unneceseary cols
@@ -113,8 +131,8 @@ def prepare_model_data(data,rest,mobility):
     
     # cast date to datetime
     data["date_x"] = data["date_x"].apply(lambda x: pd.to_datetime(x))
-    data = data.append(pd.DataFrame(np.zeros((60,data.shape[1])),columns=data.columns),ignore_index=True)
     # create empty extension of the data 60 days ahead with date column filled
+    data = data.append(pd.DataFrame(np.zeros((60,data.shape[1])),columns=data.columns),ignore_index=True)
     data["date_x"].iloc[90:150] = pd.Series(pd.date_range(data["date_x"].iloc[89],data["date_x"].iloc[89]+ pd.Timedelta(59,"D")))
 
     # write to database

@@ -38,6 +38,7 @@ class ModellingData(models.Model):
     mobility_transit = models.FloatField(blank=True, null=True)
     mobility_work = models.FloatField(blank=True, null=True)
     mobility_residential = models.FloatField(blank=True, null=True)
+    british_strain = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False

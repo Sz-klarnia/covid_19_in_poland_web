@@ -15,9 +15,15 @@ def prediction_plot(data_prev,data_pred,target_col,date_col):
     """
 
     data_prev.rename({"date_x":"date"},axis=1,inplace=True)
-    data_pred.rename({"new_cases":"new_cases_per_million"},axis=1,inplace=True)
-    # calculating the rolling mean - previous data to be plotted
-    data_prev["rolling"] = data_prev[target_col[0]].rolling(7).mean() * 37.9
+    try:
+        data_pred.rename({"new_cases":"new_cases_per_million"},axis=1,inplace=True)
+    except:
+        pass
+    try:
+        data_pred.rename({"hospitalizations":"hosp_patients_per_million"},axis=1,inplace=True)
+    except:
+        pass    # calculating the rolling mean - previous data to be plotted
+    data_prev[target_col[0]] = data_prev[target_col[0]] * 37.9
     data_pred[target_col[0]] = data_pred[target_col[0]] * 37.9
 
 
@@ -28,7 +34,7 @@ def prediction_plot(data_prev,data_pred,target_col,date_col):
     # defining fgure, scaling enabled
     p = figure(plot_width=900, plot_height=400,x_axis_type="datetime",sizing_mode="scale_width")
     # defining lines to display - dash line represents daily values, normaln line - rolling mean
-    historic = p.line(x="date",y="rolling",source=source_prev,color="grey",line_width=1,alpha=0.6,legend_label="Dane historyczne")
+    historic = p.line(x="date",y=target_col[0],source=source_prev,color="grey",line_width=2,legend_label="Dane historyczne")
     hover = HoverTool(tooltips = [(target_col[1],f"@{target_col[0]}"+"{0.0}")], mode='vline',point_policy='follow_mouse',renderers=[historic])
     hover.formatters = {"@date":"datetime"}
     p.tools.append(hover)

@@ -37,8 +37,8 @@
           <div class="col-xl-10 text-center mx-auto">
             <h2 class="section-heading">O modelu</h2>
             <p>Model, którego predykcje dotyczące dalszego rozwoju epidemii COVID-19 można wyświetlić niżej został stworzony na bazie
-                sieci neuronowych. Do treningu zostały wykorzystane dane dotyczące przebiegu epidemii z 7 europejskich państw: Polski, Niemiec, Francji,
-                Belgii, Włoch, Szwecji, Wielkiej Brytanii oraz Izraela. Są to kraje o względnie podobnych parametrach socjoekonomicznych, w których
+                sieci neuronowych. Do treningu zostały wykorzystane dane dotyczące przebiegu epidemii z 11 europejskich państw: Polski, Niemiec, Francji,
+                Belgii, Włoch, Szwecji, Wielkiej Brytanii, Portugalii, Hiszpanii, Holandii, Austrii oraz Izraela. Są to kraje o względnie podobnych parametrach socjoekonomicznych, w których
                 stosowano różne strategie walki z COVID-19 oraz będące w różnym zaawansowaniu programu szczepień. Wykorzystane dane dotyczyły
                 restrykcji, zachorowań i hospitalizacji, poziomu mobilności społecznej oraz wyszczepieniu populacji.
             </p>
@@ -57,18 +57,12 @@
           <div class="col-xl-10 mx-auto">
             <h2 class="section-heading text-center">Dostępne scenariusze</h2>
             <ul class="list-unstyled mx-auto text-left">
-                <li>Scenariusz 1: Zniesione obostrzenia, mobilność wraca poziomu sprzed pandemii, tempo szczepień stałe</li>
-                <li>Scenariusz 2: Zniesione obostrzenia, mobilność zmniejszona o 20%, tempo szczepień stałe</li>
-                <li>Scenariusz 3: Średnie obostrzenia, mobilność zmniejszona o 20%, tempo szczepień stałe</li>
-                <li>Scenariusz 4: Średnie obostrzenia, mobilność zmniejszona o 30%, tempo szczepień stałe</li>
-                <li>Scenariusz 5: Mocne obostrzenia, mobilność zmniejszona o 30%, tempo szczepień stałe</li>
-                <li>Scenariusz 6: Mocne obostrzenia, mobilność zmniejszona o 50%, tempo szczepień stałe</li>
-                <li>Scenariusz 7: Pełny lockdown, mobilność zmniejszona o 50%, tempo szczepień stałe</li>
-                <li>Scenariusz 8: Pełny lockdown, mobilność zmniejszona o 60%, tempo szczepień stałe</li>
-                <li>Scenariusz 9: Mocne obostrzenia, mobilność zmniejszona o 30%, tempo szczepień 1.5 raza szybsze</li>
-                <li>Scenariusz 10: Mocne obostrzenia, mobilność zmniejszona o 30%, tempo szczepień 2 razy wolniejsze</li>
-                <li>Scenariusz 11: Pełny lockdown, mobilność zmniejszona o 60%, tempo 1.5 raza szybsze</li>
-                <li>Scenariusz 12: Zniesione obostrzenia, mobilność wraca poziomu sprzed pandemii, tempo szczepień 2 razy wolniejsze</li>
+                <li>Scenariusz 1: Nagle zniesione obostrzenia, mobilność wraca poziomu sprzed pandemii, wyszczepienie za 60 dni - 10% zaszczepionych całkowice</li>
+                <li>Scenariusz 2: Obostrzenia luzowane dwukrotnie, za każdym razem o jeden poziom. Mobilność powoli wraca do poziomu o 10% niższego, wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
+                <li>Scenariusz 3: Obostrzenia luzowane raz, o jeden poziom, mobilność zmniejszona o 20%, wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
+                <li>Scenariusz 4: Obostrzenia utrzymane, mobilność zmniejszona o 30%,  wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
+                <li>Scenariusz 5: Obostrzenia wzmocnione o 1, mobilność zmniejszona o 50%, wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
+
             </ul>
             <form action="{% url 'predictions' %}">
                 <div class="form-row">
@@ -80,7 +74,11 @@
                             {% endfor %}
                         </select>
                     </div>
-                <button class="btn btn-secondary btn-block mt-4" type="submit">Generuj predykcje</button>
+                  <div class="form-row"> 
+                      <div class="col-form-label-sm text-center mx-auto"></div>
+                        <button class="btn btn-primary" type="submit">Generuj predykcje</button>
+                      </div>
+                  </div>
             </form>
           </div>    
         </div>
@@ -89,7 +87,7 @@
 
     <div class="site-section bg-primary-light">
         <div class="container">
-            <div class="row mb-3">
+          <div class="row mb-3">
             <div class="col-lg-7 text-center mx-auto">
                 <h2 class="section-heading">Predykcje</h2>
                 <p>Wykres prezentuje predykcje (niebieski) na tle historycznych wartości średniej zachorowań (czarny)</p>
@@ -103,9 +101,27 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
+    
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-lg-7 text-center mx-auto">
+              <h2 class="section-heading">Liczba hospitalizowanych osób</h2>
+              <p>Wykres prezentuje predykcje (niebieski) na tle historycznych wartości średniej zachorowań (czarny)</p>
+          </div>
+          <div class="col-lg-9 text-center mx-auto">
+              <figure class="plot mx-auto">
+                  {{ div2 | safe}}
+              </figure>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
     
 
