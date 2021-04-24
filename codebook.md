@@ -38,11 +38,11 @@ people_fully_vaccinated_per_hundred: Ilość osób w pełni zaszczepionych (dwie
 
 Zmiana w procentach od poziomu bazowego sprzed epidemii
 
-mobility_parks: Mobilność społeczna w parkach
-mobility_retail_and_recreation: Mobilność społeczna w centrach handlowych i miejscach rekreacji
-mobility_grocery: Mobilność społeczna związana z codziennymi zakupami
-mobility_work: Mobilność społeczna związana z pracą
-mobility_transit: MObilność społeczna związana z transportem
+mobility_parks: Mobilność społeczna w parkach.  
+mobility_retail_and_recreation: Mobilność społeczna w centrach handlowych i miejscach rekreacji.  
+mobility_grocery: Mobilność społeczna związana z codziennymi zakupami.  
+mobility_work: Mobilność społeczna związana z pracą.
+mobility_transit: MObilność społeczna związana z transportem.  
 
 ## Zmienna dotycząca występowania wariantu brytyjskiego
  
