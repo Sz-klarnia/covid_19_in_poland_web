@@ -38,25 +38,25 @@ def populate_database():
     # regional report
     df = get_regional_case_report(sheet)
     df.to_sql("reg_cases",con=engine,if_exists="replace")
-    
+    time.sleep(1)
     # testing report
     df = get_testing_report(sheet)
     df.to_sql("testing",con=engine,if_exists="replace")
-    
+    time.sleep(1)
     # regional testing reports
     data = get_regional_testing_reports(sheet)
     for key in data.keys():
         data[key].to_sql(key,con=engine,if_exists="replace")
-    
+    time.sleep(1)
     # regional cases reports
     data = get_regional_cases_reports(sheet)
     for key in data.keys():
         data[key].to_sql(key,con=engine,if_exists="replace")
-        
+    time.sleep(1)
     # hospital load report
     df = get_hospital_load_report(sheet)
     df.to_sql("hospitalizations",con=engine,if_exists="replace")
-    
+    time.sleep(1)
     # regional hospital load reports
     data = get_regional_hospitalization_data(sheet)
     for key in data.keys():
@@ -64,10 +64,11 @@ def populate_database():
     time.sleep(1)
     # get spreadsheet - vaccinations data
     sheet = client.open("Kopia COVID-19 w Polsce - Szczepienia")
-    
+    time.sleep(1)
     # get vaccinations report
     df = get_vaccination_report(sheet)
     df.to_sql("vaccinations",con=engine,if_exists="replace")
+    time.sleep(1)
     print("database populated")
 
 
