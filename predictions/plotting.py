@@ -9,22 +9,22 @@ from datetime import timedelta
 
 def prediction_plot(data_prev,data_pred,target_col,date_col):
     """
-    Creates a plot with two lines. One follows daily changes of the parameter, second one follows 7 day rolling mean.
-    target_columns - columns to include on the plot. Date must be always included as x axis values. Supplied in format: (column name,name to display on hover tool)
-    span - variable used to restrict size of the plot. Number of days to display
+    Creates a plotwith prediction and true values for 60 days ahead
+
+
+    Args:
+    data_prev: historic true values of variable
+    data_pred: predictions of variable
+    target_col: column from which data will be displayed in format (column name, name to display in hoover tool)
+    data_col: coulmn with datetime data
     """
 
     data_prev.rename({"date_x":"date"},axis=1,inplace=True)
-    try:
-        data_pred.rename({"new_cases":"new_cases_per_million"},axis=1,inplace=True)
-    except:
-        pass
-    try:
-        data_pred.rename({"hospitalizations":"hosp_patients_per_million"},axis=1,inplace=True)
-    except:
-        pass    # calculating the rolling mean - previous data to be plotted
+
+    # function used to plot values supplied in per_million format, multiplying values by 37.9 to get real values
     data_prev[target_col[0]] = data_prev[target_col[0]] * 37.9
     data_pred[target_col[0]] = data_pred[target_col[0]] * 37.9
+
 
 
     # defining tooltips for hover tool and data source for bokeh to use
@@ -33,16 +33,19 @@ def prediction_plot(data_prev,data_pred,target_col,date_col):
 
     # defining fgure, scaling enabled
     p = figure(plot_width=900, plot_height=400,x_axis_type="datetime",sizing_mode="scale_width")
-    # defining lines to display - dash line represents daily values, normaln line - rolling mean
+    # historic line and it's hover tool
     historic = p.line(x="date",y=target_col[0],source=source_prev,color="grey",line_width=2,legend_label="Dane historyczne")
     hover = HoverTool(tooltips = [(target_col[1],f"@{target_col[0]}"+"{0.0}")], mode='vline',point_policy='follow_mouse',renderers=[historic])
     hover.formatters = {"@date":"datetime"}
     p.tools.append(hover)
-
-    pred = p.line(x="date",y=target_col[0],source=source_preds,line_width=2,color="#2422bb",legend_label="Predykcje")
+    #  predictions line and it's hover tool
+    pred = p.line(x="date",y=target_col[0],source=source_preds,line_width=2,color="#2422bb",legend_label="Prognoza")
     hover1 = HoverTool(tooltips = [(target_col[1],f"@{target_col[0]}"+"{0.0}")], mode='vline',point_policy='follow_mouse',renderers=[pred])
     hover1.formatters = {"@date":"datetime"}
     p.tools.append(hover1)
+
+
+
     # creating hover tool
 
     p.legend.location = "top_left"

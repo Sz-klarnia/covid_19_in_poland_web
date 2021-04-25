@@ -23,8 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls), # admin urls
     path('', include('pages.urls')), # static page urls
     path('pl/',include("chart_page.urls")), # chart pages urls
-    path('regions/',include('regional.urls')), # regional pages urls
-    path('predictions/',include('predictions.urls'))
-]
+    path('',include('regional.urls')), # regional pages urls
+    path('predictions/',include('predictions.urls')) # predictions page url
+] 
 
 urlpatterns += static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

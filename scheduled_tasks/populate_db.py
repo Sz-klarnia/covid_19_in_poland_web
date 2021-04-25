@@ -11,7 +11,7 @@ import time
 
 def populate_database():
     """
-    Function retrieves data from google spreadsheets about COVID-19 in Poland, created by Michał Rogalski.
+    Function retrieves data from google spreadsheets.
     It uses google API to access data directly from google spreadsheets
     """
     
@@ -100,7 +100,14 @@ def prepare_model_data(data,rest,mobility):
     data = data.merge(rest,how="left",on="location_date").merge(mobility,how="left",on="location_date")
     # filling empty values
     data = data.fillna(method="bfill")
-    data = data.fillna(method="ffill")
+    # filling empty ends of mobility columns with 10 day mean
+    mobility = ['mobility_recreation', 'mobility_grocery', 'mobility_parks',
+       'mobility_transit', 'mobility_work', 'mobility_residential']
+
+    for col in mobility:
+        idx = data[data[col].isna() == True].index[0]
+        data[col][idx:] = data[col][idx-10:idx].mean()
+    
     # dropping duplicated cols
     data.drop(["location_y","date_y","location_date","location_x","location","date"],axis=1,inplace=True)
     # adding informations about british covid variant  

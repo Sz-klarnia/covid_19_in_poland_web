@@ -1,7 +1,7 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
+
+# All models created using inspectdb django function, primary keys set to index or date fields
 
 class ActiveCasesChange(models.Model):
     number_0 = models.TextField(db_column='0', blank=True,primary_key=True)  # Field renamed because it wasn't a valid Python identifier.

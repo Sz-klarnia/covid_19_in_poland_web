@@ -7,6 +7,9 @@ region_list = ["dolnoslaskie","kujawsko-pomorskie","lubelskie","lubuskie","lodzk
 "opolskie","podkarpackie","podlaskie","pomorskie","slaskie","swietokrzyskie","war-maz","wielkopolskie","zachodniopomorskie"]
 
 def prepare_cases(df):
+    """
+    Preparations of data concerning new cases obtained from google forms
+    """
     # drop empty columns
     df.dropna(axis=1,how="all",inplace=True)
     # change date to datetime format
@@ -51,6 +54,9 @@ def prepare_cases(df):
     return df
     
 def make_numeric(column):
+    """
+    Function designed to transform data columns from strings into floats
+    """
 
 
     column = column.apply(lambda x:float(str(x).replace("+ ","").replace("- ","-").
@@ -58,13 +64,24 @@ def make_numeric(column):
     return column
 
 def get_cases_report(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+    # getting right worksheet
     spread = spreadsheet.get_worksheet(0)
+    # getting data from worksheet
     data = spread.get_all_records(head=2)
+    # creating dataframe
     df = pd.DataFrame.from_dict(data)
     df.drop("",axis=1,inplace=True)
+    # preparing data
     df = prepare_cases(df)
     return df
+
 def regional_clean(df):
+    """
+    Preparations of data concerning new cases in regions obtained from google forms
+    """
     df.drop("",axis=1,inplace=True)
     
     column_renames = {
@@ -96,15 +113,25 @@ def regional_clean(df):
     return df
 
 def get_regional_case_report(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+    # getting right worksheet
     spread = spreadsheet.get_worksheet(1)
+    # reading data from worksheet
     data = spread.get_all_records(head=2)
+    # creating dataframe
     df = pd.DataFrame.from_dict(data)
     df = df.iloc[:16,:]
+    # cleaning
     df = regional_clean(df)
     
     return df
 
 def tests_clean(df):
+    """
+    Preparations of data concerning testing obtained from google forms
+    """
     df=df.iloc[:,:-2]
     # drop empty columns
     df.dropna(axis=1,how="all",inplace=True)
@@ -147,13 +174,24 @@ def tests_clean(df):
     
     return df
 def get_testing_report(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+
+    # getting right worksheet
     spread = spreadsheet.get_worksheet(2)
+    # getting data
     data = spread.get_all_records(head=2)
+    # creating dataframe
     df = pd.DataFrame.from_dict(data)
+    # cleaning
     df = tests_clean(df)
     
     return df
 def get_regional_testing_data(spread,rng,percents=False):
+    """
+    Preparations of data concerning testing in regions obtained from google forms
+    """
     df = pd.DataFrame(spread.get(rng)).iloc[1:,2:]
     df.columns = pd.DatetimeIndex(pd.date_range(pd.to_datetime("2020/11/24",format="%Y/%m/%d"),periods=len(df.columns+1)),name="date")
     
@@ -164,7 +202,12 @@ def get_regional_testing_data(spread,rng,percents=False):
             df[column] = make_numeric(df[column])
     return df
 def get_regional_testing_reports(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+    # reading right worksheet
     spread = spreadsheet.get_worksheet(3)
+    # specifying ranges of various data in the file, getting them and celaning
     regional_testing_data = {
     "daily_testing":get_regional_testing_data(spread,"4:20").transpose(),
     "daily_positive":get_regional_testing_data(spread,"24:40").transpose(),
@@ -177,6 +220,9 @@ def get_regional_testing_reports(spreadsheet):
     return regional_testing_data
     
 def get_regional_cases_data(spread,rng):
+    """
+    Preparations of data concerning new cases in regions obtained from google forms
+    """
     df = pd.DataFrame(spread.get(rng)).iloc[1:,1:]
     df.columns = pd.DatetimeIndex(pd.date_range(pd.to_datetime("2020/03/04",format="%Y/%m/%d"),periods=len(df.columns+1)),name="date")
 
@@ -184,8 +230,13 @@ def get_regional_cases_data(spread,rng):
     df.index = region_list
     return df
 def get_regional_cases_reports(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+    # getting right worksheet
     spread = spreadsheet.get_worksheet(4)
     
+    # specifying ranges of data, cleaning 
     regional_cases_data = {
         "new_cases_regional" : get_regional_cases_data(spread,"8:24").transpose(),
         "sum_cases_regional": get_regional_cases_data(spread,"31:47").transpose(),
@@ -203,6 +254,9 @@ def get_regional_cases_reports(spreadsheet):
     }
     return regional_cases_data
 def hospitals_clean(df):
+    """
+    Preparations of data concerning hospitalizations obtained from google forms
+    """
     df=df.iloc[:,:-2]
     # drop empty columns
     df.dropna(axis=1,how="all",inplace=True)
@@ -237,13 +291,23 @@ def hospitals_clean(df):
     
     return df
 def get_hospital_load_report(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+    # getting right worksheet
     spread = spreadsheet.get_worksheet(5)
+    # getting right data
     data = spread.get_all_records(head=2)
+    # creating dataframe
     df = pd.DataFrame.from_dict(data)
     
+    # cleaning
     df = hospitals_clean(df)
     return df
 def get_regional_epidemic_data(spread,rng):
+    """
+    Preparations of data concerning hospitalizations in regions obtained from google forms
+    """
     df = pd.DataFrame(spread.get(rng))
     df.fillna(0,inplace=True)
     df.columns = ["hospitalized",
@@ -262,6 +326,10 @@ def get_regional_epidemic_data(spread,rng):
         df[column] = make_numeric(df[column])
     return df
 def get_regional_hospitalization_data(spreadsheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
+
     spread = spreadsheet.get_worksheet(6)
 
     regional_ranges ={
@@ -287,6 +355,9 @@ def get_regional_hospitalization_data(spreadsheet):
         regional_dfs[key] = get_regional_epidemic_data(spread,regional_ranges[key])
     return regional_dfs
 def vacc_clean(spread):
+    """
+    Preparations of data concerning vaccinations obtained from google forms
+    """
     data = spread.get_all_records(head=2)
     df = pd.DataFrame.from_dict(data)
     df = df.iloc[1:,1:]
@@ -327,6 +398,9 @@ def vacc_clean(spread):
     return df
 
 def get_vaccination_report(sheet):
+    """
+    Function reads data from google spreadsheet, cleans it and returns cleaned version
+    """
     spread = sheet.get_worksheet(0)
     df = vacc_clean(spread)
     return df

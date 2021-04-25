@@ -12,8 +12,8 @@
           <div class="col-lg-6 mr-auto text-center text-lg-left">
             <span class="d-block subheading">Monitorujemy epidemie</span>
             <h1 class="heading mb-3">COVID-19 w Polsce</h1>
-            <p class="mb-5">Portal obywatelski z danymi dotyczącymi epidemii COVID-19 </p>
-            <p class="mb-4"><a href="https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho#" class="btn btn-primary">
+            <p class="mb-5">Portal z wizualizacjami danych dotyczących przebiegu COVID-19 w Polsce </p>
+            <p class="mb-4"><a target="_blank" href="https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho#" class="btn btn-primary">
             Przejdź do arkusza kalkulacyjnego</a></p>
 
 
@@ -95,17 +95,17 @@
         <div class="row">
           <div class="col-lg-6 mb-4 mb-lg-0">
             <figure class="img-play-vid">
-              <img src="{% static 'images/hero_1.jpg' %}" alt="Image" class="img-fluid">
+              <img src="{% static 'images/distancing.svg' %}" alt="Image" class="img-fluid">
             </figure>
           </div>
           <div class="col-lg-5 ml-auto">
-            <h2 class="mb-4 section-heading">Dlaczego to robimy?</h2>
-            <p>W walce z epidemią dane są kluczowe. Pozwalają śledzić przebieg epidemii, identyfikować zagrożenia i zapobiegać najgorszym
-              scenariuszom. Uważamy także, że otwarty dostęp do przejrzyście prezentowanych danych jest podstawowym prawem obywatelskim,
-              które pozwala weryfikować i oceniać posunięcia rządzących. Chcemy także dostarczać rzetelnej, zweryfikowanej wiedzy na temat wirusa i pandemii, poprzez kierowanie Was
-              do sprawdzonych źródeł
+            <h2 class="mb-4 section-heading">O projekcie</h2>
+            <p> Strona została zaprojektowana aby w prosty, interaktywny sposób prezentować dane dotyczące aktualnego stanu epidemicznego
+              w Polsce. Większość danych pochodzi z obywatelskiego projektu Michała Rogalskiego, który od początku epidemii zbiera i analizuje
+              dane z wielu rządowych i samorządowych źródeł. Na stronie można znaleźć także prognozy dalszego przebiegu epidemii na następne 60 dni,
+              wygenerowane za pomocą sztucznych sieci neuronowych. Dane zaprezentowane są w postaci wykresów i map, które pozwalają w przejrzysty sposób
+              zapoznać się z aktualną sytuacją
             </p>
-            <p class="mb-4"></p><a href="#" class="btn btn-primary">Przejdź do zasobów</a></p>
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@
           <div class="col-lg-7 mx-auto text-center">
             <span class="subheading">Źródła danych</span>
             <h2 class="mb-4 section-heading">Skąd pochodzą nasze dane?</h2>
-            <p>Demokratyczny dostęp do danych musi szanować źródła.</p>
+            <p>Dokładny opis źródeł można znaleźć w zakładce <a href ="{% url 'sources' %}">źródła</a></p>
           </div>
         </div>
         <div class="row">
@@ -141,12 +141,14 @@
                 <ul class="list-unstyled">
                   <li>Portal Our World In Data</li>
                   <li>Ministerstwo Zdrowia</li>
+                  <li>Dane o mobilności społecznej: Google</li>
+                  <li>Dane o obostrzeniach: Oxford Government Response Tracker</li>
                 </ul>
               </div>
             </div>
           </div>
           <div class="col-lg-6">
-            <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+            <img src="{% static 'images/database.svg' %}" alt="Image" class="img-fluid">
           </div>
         </div>
       </div>

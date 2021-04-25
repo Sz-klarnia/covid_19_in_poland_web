@@ -673,10 +673,8 @@ body:after {
       font-weight: bold; }
 
 .site-section {
-  padding-top: 10px;
-  padding-left: 90px;
-  padding-bottom: 10px;
-  padding-right: 90px; }
+  padding-top: 90px;
+  padding-bottom: 90px; }
 
 .service {
   background: #fff;

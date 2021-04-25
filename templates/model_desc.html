@@ -1,0 +1,85 @@
+{% extends "base.html"%}
+
+{% load static %}
+{% load humanize%}
+{% block content%}
+
+    
+
+
+    <div class="hero-v1">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mr-auto text-center text-lg-left">
+            <span class="d-block subheading">Przeglądaj scenariusze</span>
+            <h1 class="heading mb-3">Prognozy rozwoju epidemii</h1>
+            <p class="mb-5">Na tej stronie znajdziesz wykresy przedstawiające nasze predykcje rozwoju epidemii</p>
+            
+
+
+
+          </div>
+          <div class="col-lg-6">
+            <figure class="illustration-2">
+              <img src="{% static 'images/database.svg' %}" alt="Image" class="img-fluid">
+            </figure>
+          </div>
+          <div class="col-lg-6"></div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- MAIN -->
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-3">
+          <div class="col-xl-10 text-center mx-auto">
+            <h2 class="section-heading">Prognozy MOCOS</h2> 
+            <p>Zachęcam także do zapoznania się z modelami wykonanymi przez zespół MOCOS, który również zajmuje się prognozowaniem rozwoju epidemii
+                COVID-19 w Polsce. Są one dziełem całego zespołu badaczy z dużym doświadczeniem, mającego dostęp do większych mocy obliczeniowych 
+                i bardziej szczegółowych danych.
+            </p>
+            <p class="mb-4"><a target="_blank" href="https://mocos.pl/pl/prognosis/20210419" class="btn btn-primary">Strona MOCOS</a></p>
+            <p></p>
+            <h2 class="section-heading">Modele</h2>
+            <p>Modele wykorzystane na stronie do prognozowania rozwoju epidemii zostały opartę o <b>Sztuczne Sieci Neuronowe</b>. Są to
+                jedne z bardziej skomplikowanych i interesujących algorytmów, należących do szczeroko rozumianego <b>Uczenia Maszynowego</b>.
+                Konkretna architektura wykorzystana w tym przypadku oparta jest na sieciach <b>rekurencyjnych LSTM</b>, wyspecjalizowanych w przetwarzaniu
+                sekwencji (w naszym przypadku danych z kolejnych dni) i mogących wykrywać długoterminowe zależności pomiędzy zmiennymi. Po więcej informacji o 
+                koncepcjach stojących za SSN możesz udać się, np. pod <a target="_blank" href="https://bulldogjob.pl/articles/1136-czym-jest-deep-learning-i-sieci-neuronowe">ten link</a>
+            </p>
+            <p></p>
+            <h2 class="section-heading">Dane treningowe</h2>
+            <p></p>
+                Do treningu zostały wykorzystane dane dotyczące przebiegu epidemii z 11 europejskich państw: Polski, Niemiec, Francji,
+                Belgii, Włoch, Szwecji, Wielkiej Brytanii, Portugalii, Hiszpanii, Holandii, Austrii oraz Izraela. Państwa zostały dobrane tak, aby
+                zminimalizować różnice społeczno-ekonomiczne, co pozwoliło ograniczyć ilość wykorzystanych zmiennych. Stosowały one także inne strategie
+                walki z epidemią i mają różną prędkość szczepień populacyjnych. Wykorzystane dane dotyczyły restrykcji, zachorowań i hospitalizacji, poziomu mobilności społecznej oraz wyszczepieniu populacji.
+                Jeśli chcesz zapoznać się z dokładnym opisem zmiennych, kliknij w poniższy przycisk. 
+            </p>
+            <p class="mb-4"><a target="_blank" href="https://github.com/Sz-klarnia/covid_19_in_poland_web/blob/main/codebook.md" class="btn btn-primary">Zapoznaj się z opisem danych</a></p>
+            <p></p>
+            <h2 class="section-heading">Uwagi</h2>
+            <p> Jak każdy model prognozujący przyszłość, także i ten obarczony jest błędem. W przypadku prognoz dotyczących liczby nowych dziennych zachorowań
+                błąd ten wynosi średnio <b>1500</b> przypadków. Błąd ten jest wynikiem tego, że ma on problemy z dopasowywaniem się do zmian w raportowaniu
+                przypadków w cyklu tygodniowym. W weekendy zwykle przeprowadza się mniej testów, a pomiędzy krajami występują różnice co do tego, czy najniższe 
+                wartości pojawiają się w niedzielę, poniedziałek czy może nawet wtorek. Z tego powodu podana wyżej liczba jest najprawdopodobniej przeszacowana.
+                W najbliższym czasie na naszych wykresach pojawią się tzw. przedziały ufności - wartości, pomiędzy którymi z <b>90 %</b> pewnością
+                znalazłaby się prawdziwa wartość.
+            </p>
+            <p class="mb-4"><a href="{% url 'predictions' %}" class="btn btn-primary">Powrót do wyboru scenariusza</a></p>
+
+          </div>
+        </div>
+        
+
+    
+
+
+
+
+
+
+
+{%endblock%}

@@ -9,10 +9,10 @@ from google.oauth2.credentials import Credentials
 from .populate_db import *
 from .models import Mobility
 import io
-# If modifying these scopes, delete the file token.json.
+
 
 def check_for_new_data():
-    """Checks for new updates in google spreadsheet. If there is new data, runs populate db function
+    """Checks for new updates in google spreadsheet by looking for notifications on gmail. If there is new data, runs populate db function
     """
     SCOPES = ['https://mail.google.com/']
     creds = None
@@ -26,8 +26,7 @@ def check_for_new_data():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                r'C:\Users\szklarnia\Desktop\webdev\covid_app\covid_19\scheduled_tasks\creds_4.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file('creds_4.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
@@ -41,9 +40,12 @@ def check_for_new_data():
         populate_database()
 
 def get_new_modelling_data():
+    """
+    Getting up to date modelling data from websites and combining it into one database table
+    """
     # get latest epidemic data from OWID 
 
-    df = pd.read_json(requests.get("https://covid.ourworldindata.org/data/owid-covid-data.json").text)
+    df = pd.read_json(requests.get("https://covid.ourworldindata.org/data/owid-covid-data.json").content)
     data = pd.DataFrame(df["POL"]["data"])
 
     # get latest government restriction data from Oxford tracker
@@ -53,6 +55,5 @@ def get_new_modelling_data():
 
     modelling = pd.DataFrame(Mobility.objects.values())
     prepare_model_data(data,rest,modelling)
-    print("DONE!")
     
     

@@ -31,13 +31,14 @@ def bar_line_plot(data,target_col,date_col,span=500):
     # creating figure, enabling sizing plots to fit containers on site
     p = figure(plot_width=900, plot_height=400,x_axis_type="datetime",sizing_mode="scale_both")
     # creatin bars and line plot
-    bars = p.vbar(x="date",top=target_col[0],source=source,color="#2422bb",alpha=0.5,width=timedelta(days=1))
-    line = p.line(x="date",y="rolling_mean",source=source,line_width=2,color="black")
+    bars = p.vbar(x="date",top=target_col[0],source=source,color="#2422bb",alpha=0.5,width=timedelta(days=1),legend_label=target_col[1])
+    line = p.line(x="date",y="rolling_mean",source=source,line_width=2,color="black",legend_label="Średnia 7-dniowa")
     # creating hoover tool 
     hover = HoverTool(tooltips = tooltips, mode='vline',point_policy='follow_mouse',renderers=[line])
     hover.formatters = {"@date":"datetime"} # specyfying datetime formater for date field in hoover tool
     p.tools.append(hover)
     # returning plot
+    p.legend.location = "top_left"
     return p
 
 def dash_line_plot(data,target_col,date_col,span=500):
@@ -58,8 +59,8 @@ def dash_line_plot(data,target_col,date_col,span=500):
     # defining fgure, scaling enabled
     p = figure(plot_width=900, plot_height=400,x_axis_type="datetime",sizing_mode="scale_width")
     # defining lines to display - dash line represents daily values, normaln line - rolling mean
-    line_dash = p.line(x="date",y=target_col[0],source=source,color="grey",line_width=1,alpha=0.6,legend_label=target_col[0])
-    line = p.line(x="date",y="rolling_mean",source=source,line_width=2,color="#2422bb",legend_label="Średnia krocząca")
+    line_dash = p.line(x="date",y=target_col[0],source=source,color="grey",line_width=1,alpha=0.6,legend_label=target_col[1])
+    line = p.line(x="date",y="rolling_mean",source=source,line_width=2,color="#2422bb",legend_label="Średnia 7-dniowa")
     # plot often used to display values around zero - plotting horizontal line at zero
     hline = Span(location=0, dimension='width', line_color='black', line_width=1)
     p.renderers.extend([hline])
@@ -133,7 +134,7 @@ def fill_under_plot(data,target_col,date_col,span=500):
             color = "#2422bb"
         else: 
             color = colors[i]
-        plots[i] = p.line(x="date",y=target_col[i][0],source=source,color=color,line_width=2)
+        plots[i] = p.line(x="date",y=target_col[i][0],source=source,color=color,line_width=2,legend_label=target_col[i][1])
         if i+1 > len(target_col)-1:
             p.varea(x="date",y1=0,y2=target_col[i][0],fill_color=color,alpha=0.2,source=source)
         else:
@@ -143,7 +144,7 @@ def fill_under_plot(data,target_col,date_col,span=500):
         else:
             tooltips = [(target_col[i][1],f"@{target_col[i][0]}"+"{0.0}")]
         p.add_tools(HoverTool(tooltips = tooltips, mode='vline',point_policy='follow_mouse',renderers=[plots[i]],formatters={"@date":"datetime"}))
-
+    p.legend.location = "top_left"
     return p
 
 def fill_under_plot_stacked(data,target_col,date_col,span=500):

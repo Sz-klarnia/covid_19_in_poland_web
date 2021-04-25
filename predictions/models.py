@@ -1,6 +1,8 @@
 from django.db import models
 
-# Create your models here.
+
+# All models created using inspectdb django function, primary keys set to index or date fields
+
 class ModellingData(models.Model):
     index = models.BigIntegerField(blank=True, primary_key=True)
     date_x = models.TextField(blank=True, null=True)
@@ -47,53 +49,22 @@ class ModellingData(models.Model):
 
 class Scenario1(models.Model):
     index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
+    new_cases_per_million = models.FloatField(blank=True, null=True)
+    hosp_patients_per_million = models.FloatField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    new_deaths_per_million = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'scenario 1'
 
 
-class Scenario10(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'scenario 10'
-
-
-class Scenario11(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'scenario 11'
-
-
-class Scenario12(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'scenario 12'
-
-
 class Scenario2(models.Model):
     index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
+    new_cases_per_million = models.FloatField(blank=True, null=True)
+    hosp_patients_per_million = models.FloatField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    new_deaths_per_million = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -102,9 +73,10 @@ class Scenario2(models.Model):
 
 class Scenario3(models.Model):
     index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
+    new_cases_per_million = models.FloatField(blank=True, null=True)
+    hosp_patients_per_million = models.FloatField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    new_deaths_per_million = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -113,9 +85,10 @@ class Scenario3(models.Model):
 
 class Scenario4(models.Model):
     index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
+    new_cases_per_million = models.FloatField(blank=True, null=True)
+    hosp_patients_per_million = models.FloatField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    new_deaths_per_million = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -124,50 +97,11 @@ class Scenario4(models.Model):
 
 class Scenario5(models.Model):
     index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
+    new_cases_per_million = models.FloatField(blank=True, null=True)
+    hosp_patients_per_million = models.FloatField(blank=True, null=True)
     date = models.DateTimeField(blank=True, null=True)
+    new_deaths_per_million = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'scenario 5'
-
-
-class Scenario6(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'scenario 6'
-
-
-class Scenario7(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'scenario 7'
-
-
-class Scenario8(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'scenario 8'
-
-
-class Scenario9(models.Model):
-    index = models.BigIntegerField(blank=True, primary_key=True)
-    new_cases = models.FloatField(blank=True, null=True)
-    hospitalizations = models.FloatField(blank=True, null=True)
-    date = models.DateTimeField(blank=True, null=True)

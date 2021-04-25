@@ -8,7 +8,7 @@ import json
 from datetime import timedelta
 
 
-def map_plot(data,target_col,geodf,palet):
+def map_plot(data,target_col,geodf):
     """
     Function enables creation of inspectable maps depicting statistical values using bokeh plotting library and geopandas to supply vector maps
     of polish regions
@@ -23,20 +23,19 @@ def map_plot(data,target_col,geodf,palet):
     source = GeoJSONDataSource(geojson=geodf)
 
     # defining figure
-    p = figure(toolbar_location = "below",sizing_mode="scale_both")
+    p = figure(plot_height = 500, plot_width = 500 , toolbar_location = "below",sizing_mode="scale_both")
     # defining color palette
-    palette = palet
+    palette = inferno(8)
     palette = palette[::-1]
 
     # defining color mapper to turn values into colors
-    color_mapper = LinearColorMapper(palette = palette, low = 0, high = max(data[target_col[0]]))
+    color_mapper = LinearColorMapper(palette = palette, low = 0, high = max(data[target_col[0]])*1.1)
     # creating color bar to display below of the plot
     color_bar = ColorBar(color_mapper = color_mapper, 
                          label_standoff = 8,
-                         width = 500, height = 20,
                          border_line_color = None,
                          location = (0,0), 
-                         orientation = "horizontal")
+                         orientation = "vertical")
 
     # Add patch renderer to figure.
     plska = p.patches("xs","ys", source = source,
@@ -54,5 +53,5 @@ def map_plot(data,target_col,geodf,palet):
                                     (target_col[1],f'@{target_col[0]}')]))
 
     # add color bar to the layot
-    p.add_layout(color_bar,"below")
+    p.add_layout(color_bar,"right")
     return(p)

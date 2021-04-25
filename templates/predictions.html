@@ -12,7 +12,7 @@
         <div class="row align-items-center">
           <div class="col-lg-6 mr-auto text-center text-lg-left">
             <span class="d-block subheading">Przeglądaj scenariusze</span>
-            <h1 class="heading mb-3">Modele rozwoju epidemii</h1>
+            <h1 class="heading mb-3">Prognozy rozwoju epidemii</h1>
             <p class="mb-5">Na tej stronie znajdziesz wykresy przedstawiające nasze predykcje rozwoju epidemii</p>
             
 
@@ -21,7 +21,7 @@
           </div>
           <div class="col-lg-6">
             <figure class="illustration-2">
-              <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+              <img src="{% static 'images/plot.svg' %}" alt="Image" class="img-fluid">
             </figure>
           </div>
           <div class="col-lg-6"></div>
@@ -35,34 +35,23 @@
       <div class="container">
         <div class="row mb-3">
           <div class="col-xl-10 text-center mx-auto">
-            <h2 class="section-heading">O modelu</h2>
-            <p>Model, którego predykcje dotyczące dalszego rozwoju epidemii COVID-19 można wyświetlić niżej został stworzony na bazie
-                sieci neuronowych. Do treningu zostały wykorzystane dane dotyczące przebiegu epidemii z 11 europejskich państw: Polski, Niemiec, Francji,
-                Belgii, Włoch, Szwecji, Wielkiej Brytanii, Portugalii, Hiszpanii, Holandii, Austrii oraz Izraela. Są to kraje o względnie podobnych parametrach socjoekonomicznych, w których
-                stosowano różne strategie walki z COVID-19 oraz będące w różnym zaawansowaniu programu szczepień. Wykorzystane dane dotyczyły
-                restrykcji, zachorowań i hospitalizacji, poziomu mobilności społecznej oraz wyszczepieniu populacji.
+            <h2 class="section-heading">Zanim rozpoczniesz</h2>
+            <p>Zanim zapoznasz się z dostępnymi prognozami pamiętaj, że są one obarczone <b>błędem</b> i nie będą one stuprocentowo dokładne. Potraktuj je 
+              z rezerwą i nie traktuj ich jako proroctw. <a href={% url 'model_info' %}>Pod tym linkiem możesz dokładniej zapoznać się z procesem ich powstania.</a> 
+              Pamiętaj także, że zmiany obostrzeń zwykle przynoszą efekty po dwóch-trzech tygodniach.
             </p>
-            <p class="mb-4"><a href="#" class="btn btn-primary">Zapoznaj się z opisem danych</a></p>
-            <h2 class="section-heading">Uwagi</h2>
-            <p>Prezentowany tu model jest modelem matematycznym. Średni błąd dla danych o zachorowaniach to ok. 60 dziennie, przy przewidywaniu na 
-                60 dni w przód. Oznacza to, że w okolicach 60 dnia zsumowany błąd będzie wynosić ok. 3600 przypadków. Dodatkowo należy wziąć
-                pod uwagę, że prezentowane wartości nie są dokładnymi wartościami dziennymi, wyznaczają raczej trend rozwoju epidemii.
-            </p>
-            <p>Zachęcam także do zapoznania się z profesjonalnymi modelami wykonanymi przez MOCOS, dostępnymi pod poniższym linkiem
-            </p>
-            <p class="mb-4"><a href="https://mocos.pl/pl/prognosis/20210419" class="btn btn-primary">Strona MOCOS</a></p>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-xl-10 mx-auto">
             <h2 class="section-heading text-center">Dostępne scenariusze</h2>
             <ul class="list-unstyled mx-auto text-left">
-                <li>Scenariusz 1: Nagle zniesione obostrzenia, mobilność wraca poziomu sprzed pandemii, wyszczepienie za 60 dni - 10% zaszczepionych całkowice</li>
-                <li>Scenariusz 2: Obostrzenia luzowane dwukrotnie, za każdym razem o jeden poziom. Mobilność powoli wraca do poziomu o 10% niższego, wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
-                <li>Scenariusz 3: Obostrzenia luzowane raz, o jeden poziom, mobilność zmniejszona o 20%, wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
-                <li>Scenariusz 4: Obostrzenia utrzymane, mobilność zmniejszona o 30%,  wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
-                <li>Scenariusz 5: Obostrzenia wzmocnione o 1, mobilność zmniejszona o 50%, wyszczepienie za 60 dni - 30% zaszczepionych całkowicie</li>
-
+              <li><b>Scenariusz 1:</b><br/> Nagle zniesione obostrzenia. Program szczepień staje w miejscu<br/></li>
+              <li><b>Scenariusz 2:</b><br/> Stopniowe otwarcie wszystkich szkół, rekomendacja (zamiast zakazu) do nieorganizacji imprez masowych, mocne 
+                złagodzenie zakazu zgromadzeń, zmniejszenie limitów w komunikacji publicznej i ograniczeń w podróżach zagranicznych. Maski nieobowiązkowe na zewnątrz. Szczepienia są kontynuowane<br/></li>
+              <li><b>Scenariusz 3:</b><br/> Otwarcie części szkół w trybie hybrydowym, złagodzenie zakazu zgromadzeń, maski nieobowiązkowe na zewnątrz. Mobilność zmniejszona o 20%, szczepienia są kontynuowane<br/></li>
+              <li><b>Scenariusz 4:</b><br/> Obostrzenia utrzymane,  szczepienia nieznacznie przyspieszają<br/></li>
+              <li><b>Scenariusz 5:</b><br/> Obostrzenia wzmocnione o 1 poziom jeśli jest taka możliwość. Szczepienia nieznacznie przyspieszają<br/></li>
             </ul>
             <form action="{% url 'predictions' %}">
                 <div class="form-row">
@@ -70,57 +59,68 @@
                         <label>Wybierz scenariusz</label>
                         <select name="Scenario" class="form-control">Scenariusz
                             {% for key,value in scenarios.items %}
+                              {% if value in request.path %}
+                                <option selected = True value="{{key}}">{{value}}</option>
+                              {% else %}
                                 <option value="{{key}}">{{value}}</option>
+                              {% endif %}
                             {% endfor %}
                         </select>
+                        <p></p>
+                        <button class="btn btn-primary" type="submit">Zobacz prognozę</button>
                     </div>
-                  <div class="form-row"> 
-                      <div class="col-form-label-sm text-center mx-auto"></div>
-                        <button class="btn btn-primary" type="submit">Generuj predykcje</button>
-                      </div>
-                  </div>
             </form>
           </div>    
         </div>
       </div>
     </div>
-
-    <div class="site-section bg-primary-light">
-        <div class="container">
-          <div class="row mb-3">
-            <div class="col-lg-7 text-center mx-auto">
-                <h2 class="section-heading">Predykcje</h2>
-                <p>Wykres prezentuje predykcje (niebieski) na tle historycznych wartości średniej zachorowań (czarny)</p>
-            </div>
-            <div class="col-lg-9 text-center mx-auto">
-                <figure class="plot mx-auto">
-                    {{ div1 | safe}}
-                </figure>
-              
+    {% if "Scenario" in request.GET %}
+      <div class="site-section bg-primary-light">
+          <div class="container">
+            <div class="row mb-3">
+              <div class="col-lg-7 text-center mx-auto">
+                  <h2 class="section-heading">Liczba nowych zachorowań</h2>
+              </div>
+              <div class="col-lg-9 text-center mx-auto">
+                  <figure class="plot mx-auto">
+                      {{ div1 | safe}}
+                  </figure>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    <div class="site-section">
-      <div class="container">
-        <div class="row mb-3">
-          <div class="col-lg-7 text-center mx-auto">
-              <h2 class="section-heading">Liczba hospitalizowanych osób</h2>
-              <p>Wykres prezentuje predykcje (niebieski) na tle historycznych wartości średniej zachorowań (czarny)</p>
-          </div>
-          <div class="col-lg-9 text-center mx-auto">
-              <figure class="plot mx-auto">
-                  {{ div2 | safe}}
-              </figure>
-            
+
+      <div class="site-section">
+        <div class="container">
+          <div class="row mb-3">
+            <div class="col-lg-7 text-center mx-auto">
+                <h2 class="section-heading">Liczba hospitalizowanych osób</h2>
+            </div>
+            <div class="col-lg-9 text-center mx-auto">
+                  <figure class="plot mx-auto">
+                      {{ div2 | safe}}
+                  </figure>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <div class="site-section bg-primary-light">
+        <div class="container">
+          <div class="row mb-3">
+            <div class="col-lg-7 text-center mx-auto">
+                <h2 class="section-heading">Liczba nowych zgonów</h2>
+            </div>
+            <div class="col-lg-9 text-center mx-auto">
+                  <figure class="plot mx-auto">
+                      {{ div3 | safe}}
+                  </figure>
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
   </div>
 
     

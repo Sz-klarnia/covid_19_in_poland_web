@@ -12,14 +12,14 @@
             <span class="d-block subheading">Przeglądaj dane regionalne</span>
             <h1 class="heading mb-3">Aktualna sytuacja epidemiczna</h1>
             <p class="mb-5">Na tej stronie mapy porównujące sytuacje epidemiczną w regionach</p>
-            <p class="mb-4"><a href="#" class="btn btn-primary">Otwórz dane w arkuszu</a></p>
+            <p class="mb-4"><a target="_blank" href="https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho#" class="btn btn-primary">Otwórz dane w arkuszu</a></p>
 
 
 
           </div>
           <div class="col-lg-6">
             <figure class="illustration-2">
-              <img src="{% static 'images/protect.png' %}" alt="Image" class="img-fluid">
+              <img src="{% static 'images/plot.svg' %}" alt="Image" class="img-fluid">
             </figure>
           </div>
           <div class="col-lg-6"></div>
@@ -33,12 +33,15 @@
     <div class="site-section">
       <div class="container">
         <div class="row mb-3">
-          <div class="col-lg-7 text-center mx-auto">
+          <div class="col-lg-9 text-center mx-auto">
             <h2 class="section-heading">Procent zajętych łóżek COVID</h2>
             <p>Porównaj obłożenie szpitali</p>
-          <figure class="img">
-            <img src="" alt="Image" class="img-chart">
-          </figure>
+          </div>
+          <div class="col-lg-6 text-center mx-auto">
+            <figure class="plot mx-auto">
+              {{ div1 | safe}}
+            </figure>
+          
           </div>
         </div>
       </div>
@@ -46,53 +49,16 @@
     <div class="site-section bg-primary-light">
         <div class="container">
           <div class="row mb-3">
-            <div class="col-lg-7 text-center mx-auto">
+            <div class="col-lg-9 text-center mx-auto">
               <h2 class="section-heading">Procent zajętych łóżek respiratorowych</h2>
-              <p>Porównaj obłożenie szpitali</p>
-            <figure class="img">
-              <img src="" alt="Image" class="img-chart">
-            </figure>
+              <p>Porównaj dostępność łóżek respiratorowych</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="site-section">
-      <div class="container">
-        <div class="row mb-3">
-          <div class="col-lg-7 text-center mx-auto">
-            <h2 class="section-heading">Liczba osób na kwarantannie</h2>
-            <p>Wykres prezentuje liczbę zajętych respiratorów na tle wszystkich dostępnych</p>
-          <figure class="img">
-            <img src="" alt="Image" class="img-chart">
-          </figure>
-          </div>
-        </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="site-section bg-primary-light">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-lg-5 mr-auto">
-            <h2 class="section-heading mb-4">Średnia 7 dniowa wzrostu zajętych łóżek</h2>
-            <p>Wykres prezentuje zmianęzajętych łóżek d/d</p>
-            <figure class="img">
-              <img src="" alt="Image" class="img-chart">
-            </figure>
-          </div>
+            <div class="col-lg-6 text-center mx-auto">
+              <figure class="plot mx-auto">
+                {{ div2 | safe}}
+              </figure>
             
-
-          <div class="col-lg-5 ml-auto">
-            <h2 class="section-heading mb-4">Średnia 7 dniowa wzrostu zajętych respiratorów</h2>
-            <p>Wykres prezentuje zmianęzajętych respiratorów d/d</p>
-            
-            <figure class="img">
-              <img src="" alt="Image" class="img-chart">
-            </figure>
-            
+            </div>
           </div>
         </div>
       </div>

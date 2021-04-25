@@ -11,7 +11,7 @@ from shapely.wkt import loads
 
 
 
-populations = values = [2900163,2072373,2108270,1011592,2454779,3410901,5423168,982626,2127164,1178353,2343928,4517635,1233961,1422737,3498733,1696193]
+populations = [2900163,2072373,2108270,1011592,2454779,3410901,5423168,982626,2127164,1178353,2343928,4517635,1233961,1422737,3498733,1696193]
 reg_hospitals_keys = {
     "dolnoslaskie":HospInDolnoslaskie,
     "kujawsko_pomorskie":HospInKujawskoPomorskie,
@@ -52,13 +52,7 @@ reg_names = {
 
 
 
-# Create your views here.
-def regions(request):
 
-
-
-    
-    return render(request,"regions.html")
 
 def region(request,region_id):
     # Defining plots to display on page. Fetching data from database, creating plot with a function, getting components for display
@@ -134,13 +128,13 @@ def testing(request):
     plot_df_1["region"] = list(plot_df_1.index)
     plot_df_1.columns = ["tests","region"]
     plot_df_1["tests"] = plot_df_1["tests"].apply(lambda x: float(x))
-    plot_1 = map_plot(plot_df_1,target_col=("tests","Średnia liczba wykonanych testów"),geodf=geodf,palet=inferno(8))
+    plot_1 = map_plot(plot_df_1,target_col=("tests","Średnia liczba wykonanych testów"),geodf=geodf)
     script1,div1 = components(plot_1)
 
     plot_df_2 = pd.DataFrame(pd.DataFrame(RollingMean.objects.values()).rename(reg_names, axis=1).transpose().iloc[1:,-1])
     plot_df_2["region"] = list(plot_df_1.index)
     plot_df_2.columns = ["tests","region"]
-    plot_2 = map_plot(plot_df_2,target_col=("tests","Średnia liczba wykonanych testów"),geodf=geodf,palet=inferno(8))
+    plot_2 = map_plot(plot_df_2,target_col=("tests","Średnia liczba wykonanych testów"),geodf=geodf)
     script2,div2 = components(plot_2)
     
     context = {
@@ -157,19 +151,19 @@ def cases(request):
     geodf = pd.DataFrame(PlMap.objects.values("region","geometry"))
     geodf["geometry"] = [loads(x) for x in geodf["geometry"]]
     plot_df_1 = pd.DataFrame(RegCases.objects.values("region","number_7_day_mean_per_100k"))
-    plot_1 = map_plot(plot_df_1,target_col=("number_7_day_mean_per_100k","Średnia nowych zachorowań na 100k mieszkańców"),geodf=geodf,palet=inferno(8))
+    plot_1 = map_plot(plot_df_1,target_col=("number_7_day_mean_per_100k","Średnia nowych zachorowań na 100k mieszkańców"),geodf=geodf)
     script1,div1 = components(plot_1)
 
     plot_df_2 = pd.DataFrame(RegCases.objects.values("region","cases_per_1000"))
-    plot_2 = map_plot(plot_df_2,target_col=("cases_per_1000","Łączna liczba przypadków na 1000 mieszkańców"),geodf=geodf,palet=inferno(8))
+    plot_2 = map_plot(plot_df_2,target_col=("cases_per_1000","Łączna liczba przypadków na 1000 mieszkańców"),geodf=geodf)
     script2, div2 = components(plot_2)
     
     plot_df_3 = pd.DataFrame(RegCases.objects.values("region","deaths_per_1000"))
-    plot_3 = map_plot(plot_df_3,target_col=("deaths_per_1000","Łączna liczba zgonów na 1000 mieszkańców"),geodf=geodf,palet=inferno(8))
+    plot_3 = map_plot(plot_df_3,target_col=("deaths_per_1000","Łączna liczba zgonów na 1000 mieszkańców"),geodf=geodf)
     script3, div3 = components(plot_3)
 
     plot_df_4 = pd.DataFrame(RegCases.objects.values("region","active_cases"))
-    plot_4 = map_plot(plot_df_4,target_col=("active_cases","Ilość aktywnych przypadków na 1000 mieszkańców"),geodf=geodf,palet=inferno(8))
+    plot_4 = map_plot(plot_df_4,target_col=("active_cases","Ilość aktywnych przypadków"),geodf=geodf)
     script4, div4 = components(plot_4)
 
     context = {
@@ -186,6 +180,49 @@ def cases(request):
     return render(request,"reg_cases.html",context)
 
 def hospitals(request):
-    
-    return render(request,"reg_hospitals.html")
+    models = {
+        "Dolnośląskie":HospInDolnoslaskie,
+        "Kujawsko-Pomorskie":HospInKujawskoPomorskie,
+        "Lubelskie":HospInLodzkie,
+        "Lubuskie":HospInLubelskie,
+        "Łódzkie":HospInLubuskie,
+        "Małopolskie":HospInMalopolskie,
+        "Mazowieckie":HospInMazowieckie,
+        "Opolskie":HospInOpolskie,
+        "Podkarpackie":HospInPodkarpackie,
+        "Podlaskie":HospInPodlaskie,
+        "Pomorskie":HospInPomorskie,
+        "Śląskie":HospInSlaskie,
+        "Świętokrzyskie":HospInSwietokrzyskie,
+        "Warmińsko-Mazurskie":HospInWarminskoMazurskie,
+        "Wielkopolskie":HospInWielkopolskie,
+        "Zachodniopomorskie":HospInZachodniopomorskie
+    }
+
+
+
+    geodf = pd.DataFrame(PlMap.objects.values("region","geometry"))
+    geodf["geometry"] = [loads(x) for x in geodf["geometry"]]
+
+    plot_df_1 = pd.DataFrame({"region":[], "val":[]})
+    for key,value in models.items():
+        plot_df_1 = plot_df_1.append(pd.DataFrame({"region":key,"val":value.objects.latest("date").pct_taken_beds},index=[0]),ignore_index=True)
+    plot_1 = map_plot(plot_df_1,target_col=("val","Procent zajętych łóżek"),geodf=geodf)
+    script1,div1 = components(plot_1)
+
+    plot_df_2 = pd.DataFrame({"region":[], "val":[]})
+    for key,value in models.items():
+        plot_df_2 = plot_df_2.append(pd.DataFrame({"region":key,"val":value.objects.latest("date").pct_taken_icu},index=[0]),ignore_index=True)
+    plot_2 = map_plot(plot_df_2,target_col=("val","Procent zajętych respiratorów"),geodf=geodf)
+    script2, div2 = components(plot_2)
+
+    context = {
+        "script1":script1,
+        "div1":div1,
+        "script2":script2,
+        "div2":div2,
+    }
+
+
+    return render(request,"reg_hospitals.html",context)
 

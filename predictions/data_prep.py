@@ -5,13 +5,13 @@ from pickle import load
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
-def interpolate_column(column,rng,value):
-    column[-rng:] = np.NaN
-    column.iloc[-1] = value
+def interpolate_column(column,start_idx,rng,value):
+    column[start_idx:start_idx+rng] = np.NaN
+    column.iloc[start_idx+rng] = value
     column = column.interpolate()
     return column
 
-def fill_mobility_columns(df,level,rapid=False):
+def fill_mobility_columns(df,col_changes):
     """
     Function prepares mobility columns in the dataframe for one forward prediction,filling values ahead with chosen threshold
 
@@ -19,30 +19,21 @@ def fill_mobility_columns(df,level,rapid=False):
     df - data frame with mobility columns empty in future dates
     level - level of change in mobility in the future from the baseline in Google mobility report for Poland
     """
-    
 
-
-    columns = ['mobility_recreation',
-       'mobility_grocery', 'mobility_parks', 'mobility_transit',
-       'mobility_work']
-    if rapid == True:
-        for col in columns:
-            df[col][90:] = level
-    else:
-        for col in columns:
-            df[col]= interpolate_column(df[col], 60, level)
+    for col,value in col_changes.items():
+        df[col]= interpolate_column(df[col],90, 20, (df[col][69:90].mean())+value[0])
+        df[col]= interpolate_column(df[col],110, 39, value[1])
     
     return df
 
-def fill_restrictions_column(df,restriction_level,rapid=False):
+def fill_restrictions_column(df,cols_vals,rapid=False):
     """
-    Function prepares restriction columns in the dataframe for one forward prediction,filling values ahead with chosen threshold. For now, the function can
-    only assume 4 basic values - no restrictions, mild restrictions, severe restrictions and full lockdown, represented as: 0, 0.33, 0.66, 1. In
-    the future I'd like to include ability to tweak every restriction levels separately.
+    Function prepares restriction columns in the dataframe for one forward prediction. Restriction levels are changed according to the changes supplied
+    in cols_vals, one step every ten days untill reaching target
     
     Args:
     df - data frame with mobility columns empty in future dates
-    level - level of restrictions 
+    cols_vals - dictionary with restriction values by column
     """
 
     # restriction codes with their maximum values
@@ -63,23 +54,22 @@ def fill_restrictions_column(df,restriction_level,rapid=False):
     # rapid change - value changes in one step to target value
     for col,value in cols.items():
         if rapid == True:
-            df[col][90:] = restriction_level
+            df[col][90:] = cols_vals
             continue
-        if restriction_level == 0:
+        if cols_vals[col] == 0:
             df[col][90:] = df[col][89]
             continue
         
-        target_val = df[col][89] + restriction_level
+        target_val = cols_vals[col]
 
-        # checking if target value is not larger than
+        # checking if target value is not larger than maximum value for column
         if target_val > value:
             target_val = value
-        if target_val < 0:
-            target_val = 0
-        
-        if restriction_level > 0:
+
+        # checking wether restrictions are tighter or looser to change values every step in the right direction
+        if cols_vals[col] > df[col][89]:
             step_change = 1
-        if restriction_level < 0:
+        if cols_vals[col] < df[col][89]:
             step_change = -1
         
         if df[col][89] == target_val:
@@ -99,12 +89,19 @@ def fill_restrictions_column(df,restriction_level,rapid=False):
         if df[col][109] == target_val:
             df[col][110:] = target_val
             continue
-        # step 3 - more steps than three currently not supported
+        # step 3
         # adding value
         df[col][110:120] = df[col][109] + step_change
         # checking if target reached
         if df[col][119] == target_val:
             df[col][120:] = target_val
+            continue
+        # step 4
+        # adding value
+        df[col][120:130] = df[col][119] + step_change
+        # checking if target reached
+        if df[col][129] == target_val:
+            df[col][130:] = target_val
             continue
 
 
@@ -113,22 +110,25 @@ def fill_restrictions_column(df,restriction_level,rapid=False):
 
 def fill_vaccination_speed(df,target):
     """
-    Function prepares vaccination columns for prediction, filling the future values according to the chosen speed. Currently function only accepts
-    three values of the speed parameter: slower (represented as 0.5), constant (represented as 1) and faster (1.5). Filling algorythm:
-    predict by AutoReg model with lag set to 10, calculate difference between last value and today, multiply by speed.
+    Function prepares vaccination columns for prediction, filling the future values according to the chosen target of vaccinated people at the end of
+    the period using interpolation.
 
+    Args:
+    df - data frame of prediction data with vaccinations columns empty and ready to fill
+    target - target of people vaccinated with at least one dose at the end of the period
     """
     cols = ['total_vaccinations_per_hundred',
        'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred']
+    
+    # modifiers of target. 1.33 for doses given, 0.66 for fully vaccinated
     target_vals = [1.33,1,0.66]
     for i in range(len(cols)):
-        df[cols[i]] = interpolate_column(df[cols[i]], 60, target*target_vals[i])
+        df[cols[i]] = interpolate_column(df[cols[i]], 89, 60, target*target_vals[i])
         
     return df
 
 def general_data_prep(df):
-    """ data prep same for each model - removing partial indexes, scaling data that's constant for each country and
-    differen between them"""
+    """ Scaling, filling nan values, dropping unneceseary columns, shifting columns"""
     # dropping aggregate indexes
     df.drop(["stringency_index","containmenthealthindex","index"],axis=1,inplace=True)
     
@@ -182,6 +182,7 @@ def general_data_prep(df):
     vacc = ['total_vaccinations_per_hundred',
        'people_vaccinated_per_hundred', 'people_fully_vaccinated_per_hundred']
     
+    # Columns representing restrictions, mobility and vaccination data are all shifted by three weeks, because all of these actions have delayed effects
     df[mobility] = df[mobility].shift(21).fillna(method = "bfill")
     df[restrictions] = df[restrictions].shift(21).fillna(method = "bfill")
     df[vacc] = df[vacc].shift(21).fillna(method = "bfill")
