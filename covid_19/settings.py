@@ -85,9 +85,9 @@ WSGI_APPLICATION = 'covid_19.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', # type of database were using, postgres is cool
-        'NAME': "covid_19_in_poland",
-        "USER": "postgres",
-        "PASSWORD": "figa997",
+        'NAME': "",
+        "USER": "",
+        "PASSWORD": "",
         "HOST":"localhost"
     }
 }
