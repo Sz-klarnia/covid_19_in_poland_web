@@ -21,9 +21,9 @@ This Django application was made to gather, process and display COVID-19 statist
 
 ## Data sources
 Plots:  
-Covid-19 w Polsce - google spreadsheet made by Michał Rogalski
+Covid-19 w Polsce - google spreadsheet made by Michał Rogalski  
 
-Modelling data:
-Our World in Data
-Google COVID-19 Mobility Report
+Modelling data:  
+Our World in Data  
+Google COVID-19 Mobility Report  
 COVID Government Response Tracker by Blatnik School of Government
