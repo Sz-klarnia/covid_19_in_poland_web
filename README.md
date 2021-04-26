@@ -1,4 +1,4 @@
-# Django web page to display current COVID-19 statistics in Poland. Based on data collected by Michał Rogalski.
+# Django web page to display current COVID-19 statistics in Poland.
 
 ## URL
 http://www.dane-covid-19.pl/
